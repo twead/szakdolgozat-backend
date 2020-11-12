@@ -1,7 +1,7 @@
 package hu.gamf.szakdolgozatbackend.security.service;
 
-import java.sql.Date;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +21,28 @@ import hu.gamf.szakdolgozatbackend.security.entity.User;
 import hu.gamf.szakdolgozatbackend.security.entity.UserProfile;
 import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
 import hu.gamf.szakdolgozatbackend.security.jwt.JwtProvider;
+import hu.gamf.szakdolgozatbackend.service.EmailService;
 
 @Service
 public class RegistrationService {
 	
-	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
 	private RoleService roleService;
-	
-	@Autowired
 	private UserService userService;
+	private AuthenticationManager authenticationManager;	
+	private JwtProvider jwtProvider;	
+	private EmailService emailService;	
 	
 	@Autowired
-	private AuthenticationManager authenticationManager;
-	
-	@Autowired
-	private JwtProvider jwtProvider;
+	public RegistrationService(PasswordEncoder passwordEncoder, RoleService roleService, UserService userService,
+			AuthenticationManager authenticationManager, JwtProvider jwtProvider, EmailService emailService) {
+		this.passwordEncoder = passwordEncoder;
+		this.roleService = roleService;
+		this.userService = userService;
+		this.authenticationManager = authenticationManager;
+		this.jwtProvider = jwtProvider;
+		this.emailService = emailService;
+	}
 
 	public void setRolesSaveUserAndProfile(NewUser newUser) {
 		
@@ -48,6 +52,7 @@ public class RegistrationService {
 				newUser.getSocSecNum(),
 				newUser.getDateOfBorn()
 				);
+		userProfile.setActivation(generatedKey());
 		
 		User user = new User(
 				newUser.getUsername(),
@@ -66,6 +71,8 @@ public class RegistrationService {
 		
 		user.setRoles(roles);
 		userService.save(user);
+		
+		emailService.sendActivationEmail(user);
 	}
 	
 	public JwtDto setAuthenticationAndToken (LoginUser loginUser) {
@@ -78,6 +85,26 @@ public class RegistrationService {
 	
 	JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
 	return jwtDto;
+	}
+	
+	private String generatedKey() {
+		Random random = new Random();
+		char[] code = new char[16];
+		for (int i = 0; i < code.length; i++) {
+			code[i] = (char) ('a' + random.nextInt(26));
+		}
+		return new String(code);
+	}
+	
+	public String userActivation(String code) {
+		User user = userService.userActivation(code).get();
+		if (user == null)
+			return "noresult";
+
+		user.getUserProfile().setIsEnabled(true);
+		user.getUserProfile().setActivation("");
+		userService.save(user);
+		return "ok";
 	}
 	
 }
