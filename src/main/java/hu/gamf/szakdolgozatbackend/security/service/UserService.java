@@ -1,6 +1,7 @@
 package hu.gamf.szakdolgozatbackend.security.service;
 
 import java.util.Optional;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -30,9 +31,12 @@ public class UserService {
 		return userRepository.existsByEmail(email);
 	}
 	
+	public Optional<User> userActivation(String code) {
+		return userRepository.findByActivation(code);
+	}
+	
 	public void save(User user) {
 		userRepository.save(user);
 	}
-	
 	
 }

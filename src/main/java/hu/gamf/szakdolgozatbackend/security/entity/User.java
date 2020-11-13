@@ -3,6 +3,7 @@ package hu.gamf.szakdolgozatbackend.security.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -37,17 +39,25 @@ public class User {
 			@JoinColumn(name = "role_id") })
 	private Set<Role> roles = new HashSet<Role>();
 	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private UserProfile userProfile;
+	
 	public User() {
 		
 	}
 
-	public User(@NotNull String username, @NotNull String password, @NotNull String email, @NotNull String name) {
+	
+
+	public User(@NotNull String username, @NotNull String password, @NotNull String email, @NotNull String name, UserProfile userProfile) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.name = name;
+		this.userProfile = userProfile;
 	}
+
+
 
 	public Long getId() {
 		return id;
@@ -96,5 +106,14 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public UserProfile getUserProfile() {
+		return userProfile;
+	}
+
+	public void setUserProfile(UserProfile userProfile) {
+		this.userProfile = userProfile;
+	}
+	
 	
 }
