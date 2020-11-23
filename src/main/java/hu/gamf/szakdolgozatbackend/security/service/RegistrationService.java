@@ -65,7 +65,7 @@ public class RegistrationService {
 		userProfile.setUser(user);
 		
 		Set<Role> roles = new HashSet<>();
-		roles.add(roleService.getByRoleName(RoleName.ROLE_USER).get());
+		roles.add(roleService.getByRoleName(RoleName.ROLE_PRACTITIONER).get());
 		if(newUser.getRoles().contains("admin"))
 			roles.add(roleService.getByRoleName(RoleName.ROLE_ADMIN).get());
 		

@@ -17,6 +17,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -39,7 +43,8 @@ public class User {
 			@JoinColumn(name = "role_id") })
 	private Set<Role> roles = new HashSet<Role>();
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private UserProfile userProfile;
 	
 	public User() {
