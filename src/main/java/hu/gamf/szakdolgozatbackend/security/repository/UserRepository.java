@@ -22,4 +22,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query(value = "select * from users join users_roles on users.id = user_id join roles on roles.id = role_id where roles.role_name = ?1", nativeQuery = true)
 	List<User> findAllByRole(String role);
+	
+	@Query(value = "select * from users where username = ?1 and id != ?2", nativeQuery = true)
+	User findExistUsernameForUpdate(String username,Long id);
+	@Query(value = "select * from users where email = ?1 and id != ?2", nativeQuery = true)
+	User findExistEmailForUpdate(String email, Long id);
+	
+	
 }

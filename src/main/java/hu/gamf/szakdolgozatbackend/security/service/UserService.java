@@ -54,6 +54,20 @@ public class UserService {
 	public List<User> findAllByRole(String role){
 		return userRepository.findAllByRole(role);
 	}
+
+	public void delete(User user) {
+		userRepository.delete(user);		
+	}
 	
+	public Optional<User> findByUsername(String username){
+		return userRepository.findByUsername(username);
+	}
 	
+	public User findExistUsernameForUpdate(String username, Long id) {
+		return userRepository.findExistEmailForUpdate(username, id);
+	}
+	
+	public User findExistEmailForUpdate(String email, Long id) {
+		return userRepository.findExistEmailForUpdate(email, id);
+	}
 }
