@@ -29,7 +29,7 @@ public class EmailService {
 		mail.setSubject("Sikeres regisztráció!");
 		mail.setText("Kedves " + user.getName()
 				+ "! \n \nKöszönjük, hogy regisztráltál az oldalunkra!\n\n"
-				+ "Kérlek kattints a linkre profilod aktiválásához: " + Url + "activation/"
+				+ "Kérlek kattints a linkre profilod aktiválásához: " + Url + "auth/activation/"
 				+ user.getUserProfile().getActivation());
 		
 		javaMailSender.send(mail);

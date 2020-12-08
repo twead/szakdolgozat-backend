@@ -1,7 +1,7 @@
 package hu.gamf.szakdolgozatbackend.security.service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -38,5 +38,36 @@ public class UserService {
 	public void save(User user) {
 		userRepository.save(user);
 	}
+
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
+
+	public Optional<User> findById(Long id) {
+		return userRepository.findById(id);
+	}
 	
+	public boolean existsById(Long id) {
+		return userRepository.existsById(id);
+	}
+	
+	public List<User> findAllByRole(String role){
+		return userRepository.findAllByRole(role);
+	}
+
+	public void delete(User user) {
+		userRepository.delete(user);		
+	}
+	
+	public Optional<User> findByUsername(String username){
+		return userRepository.findByUsername(username);
+	}
+	
+	public User findExistUsernameForUpdate(String username, Long id) {
+		return userRepository.findExistEmailForUpdate(username, id);
+	}
+	
+	public User findExistEmailForUpdate(String email, Long id) {
+		return userRepository.findExistEmailForUpdate(email, id);
+	}
 }

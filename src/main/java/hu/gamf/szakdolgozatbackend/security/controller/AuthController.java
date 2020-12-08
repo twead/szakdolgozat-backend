@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -53,10 +52,10 @@ public class AuthController {
 	}
 	
 	@RequestMapping(path = "/activation/{code}", method = RequestMethod.GET)
-	public String activation(@PathVariable("code") String code, HttpServletResponse response) {
+	public ResponseEntity activation(@PathVariable("code") String code, HttpServletResponse response) {
 		
 		registrationService.userActivation(code);
-		return "auth/login";
+		return new ResponseEntity(new Message("Fiókod aktiválásra került!"),HttpStatus.OK);
 	}
 	
 	@PostMapping("/login")
