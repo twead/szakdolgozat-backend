@@ -21,35 +21,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hu.gamf.szakdolgozatbackend.dto.Message;
 import hu.gamf.szakdolgozatbackend.security.entity.User;
-import hu.gamf.szakdolgozatbackend.security.service.UserService;
+import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/dashboard")
 @CrossOrigin
 public class AdminDashboardController {
 
 	@Autowired
-	private UserService userService;
+	private AdminDashboardService dashboardService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/patients")
 	public List<User> getAllPatient() {
-		List<User> patientList = userService.findAllByRole("ROLE_USER");
+		List<User> patientList = dashboardService.findAllByRole("ROLE_USER");
 		return patientList;
 	}
 
 	@GetMapping("/practitioners")
 	public List<User> getAllPractitioners() {
-		List<User> practitionerList = userService.findAllByRole("ROLE_PRACTITIONER");
+		List<User> practitionerList = dashboardService.findAllByRole("ROLE_PRACTITIONER");
 		return practitionerList;
 	}
 
 	@GetMapping("/details/{id}")
 	public ResponseEntity<User> getUserDetailsById(@PathVariable(value = "id") Long userId) {
 
-		User user = userService.findById(userId).get();
+		User user = dashboardService.findById(userId).get();
 		if (user.equals(null))
 			return new ResponseEntity(new Message("Ezzel az Id-val nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
 
@@ -60,30 +60,19 @@ public class AdminDashboardController {
 	public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId,
 			@Valid @RequestBody User userDetails) {
 
-		User user = userService.findById(userId).get();
+		User user = dashboardService.findById(userId).get();
 		
 		if (user.equals(null))
 			return new ResponseEntity(new Message("Ezzel az Id-val nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
 		
-		if(userService.findExistUsernameForUpdate(userDetails.getUsername(), userDetails.getId())!=null)
+		if(dashboardService.findExistUsernameForUpdate(userDetails.getUsername(), userDetails.getId())!=null)
 			return new ResponseEntity(new Message("Ez a felhasználónév foglalt!"), HttpStatus.BAD_REQUEST);	
 
-		if(userService.findExistEmailForUpdate(userDetails.getEmail(), userDetails.getId())!=null)
+		if(dashboardService.findExistEmailForUpdate(userDetails.getEmail(), userDetails.getId())!=null)
 			return new ResponseEntity(new Message("Ez az email foglalt!"), HttpStatus.BAD_REQUEST);
 		
-		user.setUsername(userDetails.getUsername());
-		user.setEmail(userDetails.getEmail());	
-		user.setName(userDetails.getName());
-		user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-		user.getUserProfile().setAddress(userDetails.getUserProfile().getAddress());
-		user.getUserProfile().setDateOfBorn(userDetails.getUserProfile().getDateOfBorn());
-		user.getUserProfile().setIdCard((userDetails.getUserProfile().getIdCard()));
-		user.getUserProfile().setSocSecNum(userDetails.getUserProfile().getSocSecNum());
 
-		User updatedUser = user;
-		userService.save(user);
-
-		return new ResponseEntity(updatedUser, HttpStatus.OK);
+		return new ResponseEntity(dashboardService.setUserByDetails(user, userDetails), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/delete/{id}")
@@ -91,11 +80,11 @@ public class AdminDashboardController {
 
 		Map<String, Boolean> response = new HashMap<>();
 		
-		User user = userService.findById(userId).get();
+		User user = dashboardService.findById(userId).get();
 		if (user.equals(null))
 			response.put("Nem található user ezzel az id-val!", Boolean.FALSE);
 		
-		userService.delete(user);
+		dashboardService.delete(user);
 		
 		response.put("Sikeresen törölve!", Boolean.TRUE);
 		return response;	
