@@ -13,9 +13,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "user_profile")
@@ -33,6 +31,7 @@ public class UserProfile{
 	private String socSecNum;
 	private String activation;
 	private boolean isEnabled = false;
+	private Long practitionerId;
 	
 	
 	@JsonBackReference
@@ -113,5 +112,13 @@ public class UserProfile{
 	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
-	
+
+	public Long getPractitionerId() {
+		return practitionerId;
+	}
+
+	public void setPractitionerId(Long practitionerId) {
+		this.practitionerId = practitionerId;
+	}
+		
 }

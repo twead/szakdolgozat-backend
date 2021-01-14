@@ -58,15 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	}
 
 	
-	//Can be issues when run on global because of permissions
-	//That's the reason why I permit all requests but I'm going to modify it later.
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.cors().and().csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/auth/**").permitAll()
-			.anyRequest().permitAll() //Won't stay permit all
+			.anyRequest().authenticated()
 			.and()
 			.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
 			.and()

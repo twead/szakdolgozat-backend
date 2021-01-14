@@ -6,9 +6,12 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hu.gamf.szakdolgozatbackend.dto.Message;
 import hu.gamf.szakdolgozatbackend.security.entity.User;
+import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
 import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
 
 @RestController
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/api/dashboard")
 @CrossOrigin
 public class AdminDashboardController {
@@ -45,6 +50,19 @@ public class AdminDashboardController {
 		List<User> practitionerList = dashboardService.findAllByRole("ROLE_PRACTITIONER");
 		return practitionerList;
 	}
+	
+	@GetMapping("/schedule-practitioners/{username}")
+	public List<User> getAllPractitionerExceptMe(@PathVariable(value = "username") String username) {
+		
+		User user = dashboardService.findByUsername(username).get();
+		
+		if (user.equals(null))
+			return null;
+		
+		List<User> practitionerList = dashboardService.findAllPractitionerExceptMe(username);
+		return practitionerList;
+	}
+	
 
 	@GetMapping("/details/{id}")
 	public ResponseEntity<User> getUserDetailsById(@PathVariable(value = "id") Long userId) {

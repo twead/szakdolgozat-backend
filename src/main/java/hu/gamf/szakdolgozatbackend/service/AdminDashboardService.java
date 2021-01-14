@@ -70,6 +70,10 @@ public class AdminDashboardService extends UserService {
 		user.setPassword(passwordEncoder.encode(newPassword));
 		save(user);
 	}
+
+	public List<User> findAllPractitionerExceptMe(String username) {
+		return userRepository.findAllPractitionerExceptMe(username);
+	}
 	
 	
 }
