@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +19,11 @@ import hu.gamf.szakdolgozatbackend.security.entity.User;
 import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
 
 @RestController
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_PRACTITIONER')")
 @RequestMapping("/api")
 @CrossOrigin
 public class UserProfileController {
+	
 	@Autowired
 	private AdminDashboardService dashboardService;
 	
@@ -63,6 +66,21 @@ public class UserProfileController {
 		dashboardService.setPassword(user, newPassword);
 		
 		return new ResponseEntity(new Message("Jelszó sikeresen megváltoztatva!"),HttpStatus.OK);
+	}
+	
+	@PutMapping("/select-practitioner/{username}")
+	public ResponseEntity savePractitioner(@PathVariable(value = "username") String username,
+			@Valid @RequestBody Long practitionerId) {
+
+		User user = dashboardService.findByUsername(username).get();
+		
+		if (user.equals(null))
+			return new ResponseEntity(new Message("Nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
+		
+		user.getUserProfile().setPractitionerId(practitionerId);
+		dashboardService.save(user);
+		
+		return new ResponseEntity(new Message("Háziorvosod sikeresen kiválasztottad!"),HttpStatus.OK);
 	}
 	
 }
