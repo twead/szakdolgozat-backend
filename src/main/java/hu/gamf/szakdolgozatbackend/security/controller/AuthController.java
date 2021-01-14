@@ -1,5 +1,7 @@
 package hu.gamf.szakdolgozatbackend.security.controller;
 
+import java.text.ParseException;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -21,6 +23,7 @@ import hu.gamf.szakdolgozatbackend.security.dto.JwtDto;
 import hu.gamf.szakdolgozatbackend.security.dto.LoginUser;
 import hu.gamf.szakdolgozatbackend.security.dto.NewUser;
 import hu.gamf.szakdolgozatbackend.security.entity.User;
+import hu.gamf.szakdolgozatbackend.security.jwt.JwtProvider;
 import hu.gamf.szakdolgozatbackend.security.service.RegistrationService;
 import hu.gamf.szakdolgozatbackend.security.service.UserService;
 
@@ -34,6 +37,9 @@ public class AuthController {
 	
 	@Autowired
 	private RegistrationService registrationService;
+	
+	@Autowired
+	private JwtProvider jwtProvider;
 	
 	
 	@PostMapping(path = "/registration", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
@@ -73,6 +79,13 @@ public class AuthController {
 
 		JwtDto jwtDto = registrationService.setAuthenticationAndToken(loginUser);
 		return new ResponseEntity(jwtDto,HttpStatus.OK);		
+	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<JwtDto> refresh(@RequestBody JwtDto jwtDto) throws ParseException {
+		String token = jwtProvider.refreshToken(jwtDto);
+		JwtDto jwt = new JwtDto(token);
+		return new ResponseEntity(jwt, HttpStatus.OK);
 	}
 	
 }
