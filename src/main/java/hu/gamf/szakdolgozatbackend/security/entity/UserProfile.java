@@ -3,6 +3,7 @@ package hu.gamf.szakdolgozatbackend.security.entity;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -23,12 +25,20 @@ public class UserProfile{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String picture;	
+	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
 	private Date dateOfBorn;
-	private String address;	
+	@NotNull
+	@Column(length = 60)
+	private String address;
+	@NotNull
+	@Column(unique = true, length = 8)
 	private String idCard;
 	//Social Security Number
+	@NotNull
+	@Column(unique = true, length = 9)
 	private String socSecNum;
+	@Column(length = 16)
 	private String activation;
 	private boolean isEnabled = false;
 	private Long practitionerId;

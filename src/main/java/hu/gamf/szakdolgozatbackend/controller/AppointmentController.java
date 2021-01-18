@@ -1,5 +1,7 @@
 package hu.gamf.szakdolgozatbackend.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,42 +22,42 @@ import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
 
 @RestController
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_PRACTITIONER')")
-@RequestMapping("/api")
+@RequestMapping("/api/appointment")
 @CrossOrigin
-public class UserProfileController {
-
+public class AppointmentController {
+		
 	private AdminDashboardService dashboardService;
-
+	
 	@Autowired
-	public UserProfileController(AdminDashboardService dashboardService) {
+	public AppointmentController(AdminDashboardService dashboardService) {
 		this.dashboardService = dashboardService;
 	}
+	
+	//-------------------------PATIENT HASN'T SELECTED PRACTITIONER YET-------------------------
 
-	@GetMapping("/profile-details/{username}")
-	public ResponseEntity<User> getProfileDetails(@PathVariable(value = "username") String username) {
+	@GetMapping("/schedule-practitioners/{username}")
+	public List<User> getAllPractitionerExceptMe(@PathVariable(value = "username") String username) {
 		User user = dashboardService.findByUsername(username).get();
-		return new ResponseEntity(user, HttpStatus.OK);
+		List<User> practitionerList = dashboardService.findAllPractitionerExceptMe(username);
+		return practitionerList;
 	}
 
-	@PutMapping("/profile-update/{username}")
-	public ResponseEntity<User> updateProfile(@PathVariable(value = "username") String username,
-			@Valid @RequestBody User userDetails) {
-		User user = dashboardService.findByUsername(username).get();
-		return dashboardService.updateUser(user, userDetails);
-	}
-
-	@PutMapping("/password-update/{username}")
-	public ResponseEntity updatePassword(@PathVariable(value = "username") String username,
-			@Valid @RequestBody String newPassword) {
+	@PutMapping("/select-practitioner/{username}")
+	public ResponseEntity savePractitioner(@PathVariable(value = "username") String username,
+			@Valid @RequestBody Long practitionerId) {
 
 		User user = dashboardService.findByUsername(username).get();
 
 		if (user.equals(null))
 			return new ResponseEntity(new Message("Nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
 
-		dashboardService.setPassword(user, newPassword);
+		user.getUserProfile().setPractitionerId(practitionerId);
+		dashboardService.save(user);
 
-		return new ResponseEntity(new Message("Jelszó sikeresen megváltoztatva!"), HttpStatus.OK);
+		return new ResponseEntity(new Message("Háziorvosod sikeresen kiválasztottad!"), HttpStatus.OK);
 	}
 	
+	
+	//-------------------------PATIENT HAS ALREADY SELECTED PRACTITIONER-------------------------
+
 }

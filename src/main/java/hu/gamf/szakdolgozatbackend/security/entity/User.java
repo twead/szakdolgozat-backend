@@ -17,10 +17,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -29,13 +25,16 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotNull
-	@Column(unique = true)
+	@Column(unique = true, length = 15)
 	private String username;
 	@NotNull
+	@Column(length = 60)
 	private String password;
 	@NotNull
+	@Column(unique = true, length = 40)
 	private String email;
 	@NotNull
+	@Column(length = 40)
 	private String name;
 	@NotNull
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -47,22 +46,16 @@ public class User {
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private UserProfile userProfile;
 	
-	public User() {
-		
+	public User() {		
 	}
 
-	
-
-	public User(@NotNull String username, @NotNull String password, @NotNull String email, @NotNull String name, UserProfile userProfile) {
-		super();
+	public User(String username, String password, String email, String name, UserProfile userProfile) {
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.name = name;
 		this.userProfile = userProfile;
 	}
-
-
 
 	public Long getId() {
 		return id;
@@ -119,6 +112,5 @@ public class User {
 	public void setUserProfile(UserProfile userProfile) {
 		this.userProfile = userProfile;
 	}
-	
 	
 }

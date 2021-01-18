@@ -10,6 +10,6 @@ import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
 
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer>{
+public interface RoleRepository extends JpaRepository<Role, Short>{
 	Optional<Role> findByRoleName(RoleName roleName);
 }

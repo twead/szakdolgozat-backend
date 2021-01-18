@@ -11,11 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import hu.gamf.szakdolgozatbackend.dto.Message;
@@ -32,16 +32,17 @@ import hu.gamf.szakdolgozatbackend.security.service.UserService;
 @CrossOrigin
 public class AuthController {
 	
-	@Autowired
 	private UserService userService;
-	
-	@Autowired
 	private RegistrationService registrationService;
-	
-	@Autowired
 	private JwtProvider jwtProvider;
-	
-	
+
+	@Autowired
+	public AuthController(UserService userService, RegistrationService registrationService, JwtProvider jwtProvider) {
+		this.userService = userService;
+		this.registrationService = registrationService;
+		this.jwtProvider = jwtProvider;
+	}
+
 	@PostMapping(path = "/registration", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
 	public ResponseEntity<?> addUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult){
 		if(bindingResult.hasErrors())
@@ -57,7 +58,7 @@ public class AuthController {
 		return new ResponseEntity(new Message("Sikeres regisztráció!"),HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(path = "/activation/{code}", method = RequestMethod.GET)
+	@GetMapping(path = "/activation/{code}")
 	public ResponseEntity activation(@PathVariable("code") String code, HttpServletResponse response) {
 		
 		registrationService.userActivation(code);
@@ -67,6 +68,9 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUser loginUser, BindingResult bindingResult){
 		
+		if(bindingResult.hasErrors())
+			return new ResponseEntity(new Message("Hibás felhasználónév vagy jelszó!"), HttpStatus.BAD_REQUEST);
+
 		try {
 			User user = userService.getByUsername(loginUser.getUsername()).get();
 			

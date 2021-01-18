@@ -1,5 +1,6 @@
 package hu.gamf.szakdolgozatbackend.security.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,9 +19,10 @@ public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private short id;
 	@NotNull
 	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
 	private RoleName roleName;
 	
 	public Role() {
@@ -30,11 +32,11 @@ public class Role {
 		this.roleName = roleName;
 	}
 
-	public int getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
