@@ -19,7 +19,7 @@ public class CreateRoles implements CommandLineRunner {
     	/*
     	Role roleAdmin = new Role(RoleName.ROLE_ADMIN);
     	Role rolePractitioner = new Role(RoleName.ROLE_PRACTITIONER);
-        Role roleUser = new Role(RoleName.ROLE_USER);
+        Role roleUser = new Role(RoleName.ROLE_PATIENT);
         roleService.save(roleAdmin);
         roleService.save(rolePractitioner);
         roleService.save(roleUser);

@@ -12,12 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import hu.gamf.szakdolgozatbackend.entity.Patient;
 import hu.gamf.szakdolgozatbackend.security.dto.JwtDto;
 import hu.gamf.szakdolgozatbackend.security.dto.LoginUser;
 import hu.gamf.szakdolgozatbackend.security.dto.NewUser;
 import hu.gamf.szakdolgozatbackend.security.entity.Role;
 import hu.gamf.szakdolgozatbackend.security.entity.User;
-import hu.gamf.szakdolgozatbackend.security.entity.UserProfile;
 import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
 import hu.gamf.szakdolgozatbackend.security.jwt.JwtProvider;
 import hu.gamf.szakdolgozatbackend.service.EmailService;
@@ -45,31 +45,36 @@ public class RegistrationService {
 
 	public void setRolesSaveUserAndProfile(NewUser newUser) {
 		
-		UserProfile userProfile = new UserProfile(
+		Patient patient = new Patient(
+				newUser.getName(),
+				newUser.getEmail(),
 				newUser.getAddress(),
+				newUser.getDateOfBorn(),
 				newUser.getIdCard(),
-				newUser.getSocSecNum(),
-				newUser.getDateOfBorn()
-				);
-		userProfile.setActivation(generatedKey());
+				newUser.getSocSecNum()
+				);		
 		
 		User user = new User(
 				newUser.getUsername(),
 				passwordEncoder.encode(newUser.getPassword()),
-				newUser.getEmail(),
-				newUser.getName(),
-				userProfile
+				patient
 				);
 		
-		userProfile.setUser(user);
+		user.setActivation(generatedKey());
+		
+		patient.setUser(user);
 		
 		Set<Role> roles = new HashSet<>();
 		roles.add(roleService.getByRoleName(RoleName.ROLE_PRACTITIONER).get());
-		if(newUser.getRoles().contains("admin"))
+		if(newUser.getRoles().contains("practitioner")) {	
+			roles.add(roleService.getByRoleName(RoleName.ROLE_PRACTITIONER).get());
+		}
+		if(newUser.getRoles().contains("admin")) {	
 			roles.add(roleService.getByRoleName(RoleName.ROLE_ADMIN).get());
-		
+		}
+	
 		user.setRoles(roles);
-		userService.save(user);
+		userService.saveUser(user);
 		
 		emailService.sendActivationEmail(user);
 	}
@@ -98,9 +103,9 @@ public class RegistrationService {
 		if (user == null)
 			return "noresult";
 
-		user.getUserProfile().setIsEnabled(true);
-		user.getUserProfile().setActivation("");
-		userService.save(user);
+		user.setEnabled(true);
+		user.setActivation("");
+		userService.saveUser(user);
 		return "ok";
 	}
 	

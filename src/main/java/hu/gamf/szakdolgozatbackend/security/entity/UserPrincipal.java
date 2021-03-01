@@ -12,19 +12,15 @@ public class UserPrincipal implements UserDetails{
 	
 	private String username;
 	private String password;
-	private String email;
-	private String name;
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	private boolean isEnabled;
 	
 
-	public UserPrincipal(String username, String password, String email, String name,
+	public UserPrincipal(String username, String password,
 			Collection<? extends GrantedAuthority> authorities, boolean isEnabled) {
 		this.username = username;
 		this.password = password;
-		this.email = email;
-		this.name = name;
 		this.authorities = authorities;
 		this.isEnabled = isEnabled;
 	}
@@ -32,7 +28,7 @@ public class UserPrincipal implements UserDetails{
 	public static UserPrincipal build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name())).collect(Collectors.toList());
-		return new UserPrincipal(user.getUsername(), user.getPassword(), user.getEmail(), user.getName(), authorities, user.getUserProfile().getIsEnabled());
+		return new UserPrincipal(user.getUsername(), user.getPassword(), authorities, user.isEnabled());
 	}
 
 	@Override
@@ -69,13 +65,5 @@ public class UserPrincipal implements UserDetails{
 	public boolean isEnabled() {
 		return isEnabled;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getName() {
-		return name;
-	}	
 	
 }

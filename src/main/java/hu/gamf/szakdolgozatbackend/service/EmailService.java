@@ -24,13 +24,13 @@ public class EmailService {
 	
 	public void sendActivationEmail(User user) throws MailException {
 		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setTo(user.getEmail());
+		mail.setTo(user.getPatient().getEmail());
 		mail.setFrom("onlinehealthcaresystem@email.com");
 		mail.setSubject("Sikeres regisztráció!");
-		mail.setText("Kedves " + user.getName()
+		mail.setText("Kedves " + user.getPatient().getName()
 				+ "! \n \nKöszönjük, hogy regisztráltál az oldalunkra!\n\n"
 				+ "Kérlek kattints a linkre profilod aktiválásához: " + Url + "auth/activation/"
-				+ user.getUserProfile().getActivation());
+				+ user.getActivation());
 		
 		javaMailSender.send(mail);
 	}

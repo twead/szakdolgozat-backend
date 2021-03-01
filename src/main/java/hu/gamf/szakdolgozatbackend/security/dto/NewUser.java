@@ -22,7 +22,6 @@ public class NewUser {
 	private String email;
 	private Set<String> roles = new HashSet<>();
 	
-	//UserProfil
 	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
 	private Date dateOfBorn;
 	private String address;	

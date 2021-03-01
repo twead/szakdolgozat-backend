@@ -47,9 +47,9 @@ public class AuthController {
 	public ResponseEntity<?> addUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult){
 		if(bindingResult.hasErrors())
 			return new ResponseEntity(new Message("Hibás mezők vagy nem megfelelő email!"), HttpStatus.BAD_REQUEST);
-		if(userService.existsByUsername(newUser.getUsername()))
+		if(userService.existsUserByUsername(newUser.getUsername()))
 			return new ResponseEntity(new Message("Felhasználónév foglalt!"), HttpStatus.BAD_REQUEST);
-		if(userService.existsByEmail(newUser.getEmail()))
+		if(userService.existsUserByEmail(newUser.getEmail()))
 			return new ResponseEntity(new Message("Email cím foglalt!"), HttpStatus.BAD_REQUEST);
 		
 		registrationService.setRolesSaveUserAndProfile(newUser);
@@ -72,9 +72,9 @@ public class AuthController {
 			return new ResponseEntity(new Message("Hibás felhasználónév vagy jelszó!"), HttpStatus.BAD_REQUEST);
 
 		try {
-			User user = userService.getByUsername(loginUser.getUsername()).get();
+			User user = userService.findUserByUsername(loginUser.getUsername()).get();
 			
-			if(!user.getUserProfile().getActivation().isEmpty())
+			if(!user.getActivation().isEmpty())
 				return new ResponseEntity(new Message("Erősítsd meg az emailedet!"), HttpStatus.BAD_REQUEST);
 		
 		}catch(Exception e) {

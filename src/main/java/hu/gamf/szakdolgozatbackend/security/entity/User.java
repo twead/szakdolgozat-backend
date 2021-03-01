@@ -17,6 +17,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import hu.gamf.szakdolgozatbackend.entity.Patient;
+import hu.gamf.szakdolgozatbackend.entity.Practitioner;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -30,33 +33,31 @@ public class User {
 	@NotNull
 	@Column(length = 60)
 	private String password;
-	@NotNull
-	@Column(unique = true, length = 40)
-	private String email;
-	@NotNull
-	@Column(length = 40)
-	private String name;
+	@Column(length = 16)
+	private String activation;
+	private boolean isEnabled;
+	
 	@NotNull
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id") })
-	private Set<Role> roles = new HashSet<Role>();
+	private Set<Role> roles = new HashSet<Role>();	
 	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	private Patient patient;
 	
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private UserProfile userProfile;
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	private Practitioner practitioner;
 	
 	public User() {		
 	}
 
-	public User(String username, String password, String email, String name, UserProfile userProfile) {
+	public User(String username, String password, Patient patient) {
 		this.username = username;
 		this.password = password;
-		this.email = email;
-		this.name = name;
-		this.userProfile = userProfile;
+		this.patient = patient;		
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,20 +82,20 @@ public class User {
 		this.password = password;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getActivation() {
+		return activation;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setActivation(String activation) {
+		this.activation = activation;
 	}
 
-	public String getName() {
-		return name;
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 
 	public Set<Role> getRoles() {
@@ -105,12 +106,20 @@ public class User {
 		this.roles = roles;
 	}
 
-	public UserProfile getUserProfile() {
-		return userProfile;
+	public Patient getPatient() {
+		return patient;
 	}
 
-	public void setUserProfile(UserProfile userProfile) {
-		this.userProfile = userProfile;
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+
+	public Practitioner getPractitioner() {
+		return practitioner;
+	}
+
+	public void setPractitioner(Practitioner practitioner) {
+		this.practitioner = practitioner;
 	}
 	
 }

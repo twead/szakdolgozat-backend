@@ -17,42 +17,45 @@ import org.springframework.web.bind.annotation.RestController;
 import hu.gamf.szakdolgozatbackend.dto.Message;
 import hu.gamf.szakdolgozatbackend.security.entity.User;
 import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
+import hu.gamf.szakdolgozatbackend.service.PatientService;
 
 @RestController
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_PRACTITIONER')")
-@RequestMapping("/api")
+@PreAuthorize("hasAnyRole('ROLE_PRACTITIONER','ROLE_PATIENT')")
+@RequestMapping("/api/profile")
 @CrossOrigin
 public class UserProfileController {
 
+	private PatientService patientService;
 	private AdminDashboardService dashboardService;
 
 	@Autowired
-	public UserProfileController(AdminDashboardService dashboardService) {
+	public UserProfileController(PatientService patientService, AdminDashboardService dashboardService) {
+		this.patientService = patientService;
 		this.dashboardService = dashboardService;
 	}
 
-	@GetMapping("/profile-details/{username}")
+	@GetMapping("/details/{username}")
 	public ResponseEntity<User> getProfileDetails(@PathVariable(value = "username") String username) {
-		User user = dashboardService.findByUsername(username).get();
+		User user = patientService.findUserByUsername(username).get();
 		return new ResponseEntity(user, HttpStatus.OK);
 	}
 
-	@PutMapping("/profile-update/{username}")
+	@PutMapping("/update/{username}")
 	public ResponseEntity<User> updateProfile(@PathVariable(value = "username") String username,
 			@Valid @RequestBody User userDetails) {
-		User user = dashboardService.findByUsername(username).get();
-		return dashboardService.updateUser(user, userDetails);
+		User user = patientService.findUserByUsername(username).get();
+		
+		if(patientService.findExistEmailForUpdate(userDetails.getPatient().getEmail(), userDetails.getId())!=null)
+			return new ResponseEntity(new Message("Ez az email foglalt!"), HttpStatus.BAD_REQUEST);
+		
+		return new ResponseEntity(dashboardService.setUserByDetails(user, userDetails), HttpStatus.OK);
 	}
 
 	@PutMapping("/password-update/{username}")
 	public ResponseEntity updatePassword(@PathVariable(value = "username") String username,
 			@Valid @RequestBody String newPassword) {
 
-		User user = dashboardService.findByUsername(username).get();
-
-		if (user.equals(null))
-			return new ResponseEntity(new Message("Nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
-
+		User user = patientService.findUserByUsername(username).get();
 		dashboardService.setPassword(user, newPassword);
 
 		return new ResponseEntity(new Message("Jelszó sikeresen megváltoztatva!"), HttpStatus.OK);
