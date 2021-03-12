@@ -5,10 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hu.gamf.szakdolgozatbackend.entity.Patient;
 import hu.gamf.szakdolgozatbackend.entity.Practitioner;
 import hu.gamf.szakdolgozatbackend.repository.PractitionerRepository;
-import hu.gamf.szakdolgozatbackend.security.service.UserService;
 
 @Service
 public class PractitionerService extends UserService{
@@ -24,8 +22,8 @@ public class PractitionerService extends UserService{
 		return practitionerRepository.findById(id);
 	}
 	
-	public Practitioner findExistEmailForUpdate(String email, Long id) {		
-		return practitionerRepository.findExistEmailForUpdate(email, id);
+	public void save(Practitioner practitioner) {
+		practitionerRepository.save(practitioner);		
 	}
 	
 }

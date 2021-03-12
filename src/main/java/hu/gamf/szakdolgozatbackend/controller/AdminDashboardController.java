@@ -1,8 +1,6 @@
 package hu.gamf.szakdolgozatbackend.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -19,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import hu.gamf.szakdolgozatbackend.dto.Message;
-import hu.gamf.szakdolgozatbackend.security.entity.User;
+import hu.gamf.szakdolgozatbackend.entity.User;
+import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
 import hu.gamf.szakdolgozatbackend.service.PatientService;
 import hu.gamf.szakdolgozatbackend.service.PractitionerService;
@@ -48,95 +46,38 @@ public class AdminDashboardController {
 		List<User> patientList = patientService.findAllUserByRole("ROLE_PATIENT");
 		return patientList;
 	}
-
-	@GetMapping("/patients/details/{id}")
-	public ResponseEntity<User> getPatientDetailsById(@PathVariable(value = "id") Long userId) {
-
-		User user = patientService.findUserById(userId).get();
-		if (user.equals(null))
-			return new ResponseEntity(new Message("Ezzel az Id-val nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
-
-		return new ResponseEntity(user, HttpStatus.OK);
-	}
-
-	@PutMapping("/patients/update/{id}")
-	public ResponseEntity<User> updatePatient(@PathVariable(value = "id") Long userId,
-			@Valid @RequestBody User userDetails) {
-		User user = patientService.findUserById(userId).get();
-		if (user.equals(null))
-			return new ResponseEntity(new Message("Nem létezik a felhasználó!"), HttpStatus.BAD_REQUEST);
-		
-		if(patientService.findExistUsernameForUpdate(userDetails.getUsername(), userDetails.getId())!=null)
-			return new ResponseEntity(new Message("Ez a felhasználónév foglalt!"), HttpStatus.BAD_REQUEST);
-		
-		if(patientService.findExistEmailForUpdate(userDetails.getPatient().getEmail(), userDetails.getId())!=null)
-			return new ResponseEntity(new Message("Ez az email foglalt!"), HttpStatus.BAD_REQUEST);
-		
-		return new ResponseEntity(dashboardService.setUserByDetails(user, userDetails), HttpStatus.OK);
-		
-	}
-
-	@DeleteMapping("/patients/delete/{id}")
-	public Map<String, Boolean> deletePatient(@PathVariable(value = "id") Long userId) {
-
-		Map<String, Boolean> response = new HashMap<>();
-		
-		User user = patientService.findUserById(userId).get();
-		if (user.equals(null))
-			response.put("Nem található felhasználó ezzel az id-val!", Boolean.FALSE);
-		
-		patientService.deleteUser(user);
-		
-		response.put("Sikeresen törölve!", Boolean.TRUE);
-		return response;	
-	}	
 	
 	@GetMapping("/practitioners")
 	public List<User> getAllPractitioners() {
 		List<User> practitionerList = practitionerService.findAllUserByRole("ROLE_PRACTITIONER");
 		return practitionerList;
 	}
-	
-	@GetMapping("/practitioners/details/{id}")
-	public ResponseEntity<User> getPractitionerDetailsById(@PathVariable(value = "id") Long userId) {
 
-		User user = practitionerService.findUserById(userId).get();
-		if (user.equals(null))
-			return new ResponseEntity(new Message("Ezzel az Id-val nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
-
+	@GetMapping("/patients/details/{id}")
+	public ResponseEntity<User> getPatientDetailsById(@PathVariable(value = "id") Long userId) {
+		User user = patientService.findUserById(userId).orElseThrow(
+				() -> new ApiRequestException("Nem található felhasználó ezzel az id-val!")
+			);
 		return new ResponseEntity(user, HttpStatus.OK);
 	}
 
-	@PutMapping("/practitioners/update/{id}")
-	public ResponseEntity<User> updatePractitioner(@PathVariable(value = "id") Long userId,
+	@PutMapping("/patients/update/{id}")
+	public ResponseEntity<User> updatePatient(@PathVariable(value = "id") Long userId,
 			@Valid @RequestBody User userDetails) {
-		User user = practitionerService.findUserById(userId).get();
-		if (user.equals(null))
-			return new ResponseEntity(new Message("Nem létezik a felhasználó!"), HttpStatus.BAD_REQUEST);
-		
-		if(practitionerService.findExistUsernameForUpdate(userDetails.getUsername(), userDetails.getId())!=null)
-			return new ResponseEntity(new Message("Ez a felhasználónév foglalt!"), HttpStatus.BAD_REQUEST);
-		
-		if(patientService.findExistEmailForUpdate(userDetails.getPatient().getEmail(), userDetails.getId())!=null)
-			return new ResponseEntity(new Message("Ez az email foglalt!"), HttpStatus.BAD_REQUEST);
-		
-		return new ResponseEntity(dashboardService.setUserByDetails(user, userDetails), HttpStatus.OK);
-		
+		User user = dashboardService.updatePatientInDashboard(userId, userDetails);
+		return new ResponseEntity(user, HttpStatus.OK);
+	}
+	
+	@GetMapping("/patients/update-to-practitioner/{id}")
+	public ResponseEntity updatePatientToPractitioner(@PathVariable(value = "id") Long userId) {		
+		dashboardService.setPractitionerRoleToUserById(userId);		
+		return new ResponseEntity(HttpStatus.OK);		
 	}
 
-	@DeleteMapping("/practitioners/delete/{id}")
-	public Map<String, Boolean> deletePractitioner(@PathVariable(value = "id") Long userId) {
-
-		Map<String, Boolean> response = new HashMap<>();
-		
-		User user = practitionerService.findUserById(userId).get();
-		if (user.equals(null))
-			response.put("Nem található felhasználó ezzel az id-val!", Boolean.FALSE);
-		
-		practitionerService.deleteUser(user);
-		
-		response.put("Sikeresen törölve!", Boolean.TRUE);
-		return response;	
+	@DeleteMapping("/patients/delete/{id}")
+	public ResponseEntity deletePatient(@PathVariable(value = "id") Long userId) {		
+		patientService.deleteUserById(userId);
+		return new ResponseEntity(HttpStatus.OK);	
 	}
 	
 }

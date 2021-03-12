@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.service;
+package hu.gamf.szakdolgozatbackend.service;
 
 import java.util.Optional;
 
@@ -7,9 +7,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hu.gamf.szakdolgozatbackend.security.entity.Role;
-import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
-import hu.gamf.szakdolgozatbackend.security.repository.RoleRepository;
+import hu.gamf.szakdolgozatbackend.entity.Role;
+import hu.gamf.szakdolgozatbackend.enums.RoleName;
+import hu.gamf.szakdolgozatbackend.repository.RoleRepository;
 
 
 @Service

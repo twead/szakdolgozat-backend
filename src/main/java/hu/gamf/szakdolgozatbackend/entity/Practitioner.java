@@ -1,6 +1,5 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,29 +14,32 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import hu.gamf.szakdolgozatbackend.security.entity.User;
-
 @Entity
 @Table(name = "practitioner")
-public class Practitioner extends UserProfile {
+public class Practitioner {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	private String workingAddress;
+	
 	@JsonBackReference
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 	
 	@OneToMany(mappedBy="practitioner")
     private List<Worktime> worktimes;
 
 	public Practitioner() {
-		super();
 	}
 	
-	public Practitioner(String name, String email, String address, Date dateOfBorn) {
-		super(name,email,address,dateOfBorn);
+	public String getWorkingAddress() {
+		return workingAddress;
+	}
+
+	public void setWorkingAddress(String workingAddress) {
+		this.workingAddress = workingAddress;
 	}
 
 	public User getUser() {

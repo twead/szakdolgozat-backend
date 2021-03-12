@@ -16,7 +16,7 @@ public class AppointmentService {
 	private AppointmentRepository appointmentRepository;
 
 	@Autowired
-	public AppointmentService(AppointmentRepository appointmentRepository, WorktimeRepository worktimeRepository) {
+	public AppointmentService(AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
 	}
 	

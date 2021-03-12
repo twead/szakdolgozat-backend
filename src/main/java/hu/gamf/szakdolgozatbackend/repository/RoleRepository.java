@@ -1,12 +1,12 @@
-package hu.gamf.szakdolgozatbackend.security.repository;
+package hu.gamf.szakdolgozatbackend.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import hu.gamf.szakdolgozatbackend.security.entity.Role;
-import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
+import hu.gamf.szakdolgozatbackend.entity.Role;
+import hu.gamf.szakdolgozatbackend.enums.RoleName;
 
 
 @Repository

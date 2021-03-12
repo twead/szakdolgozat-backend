@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.entity;
+package hu.gamf.szakdolgozatbackend.entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import hu.gamf.szakdolgozatbackend.entity.Patient;
-import hu.gamf.szakdolgozatbackend.entity.Practitioner;
 
 @Entity
 @Table(name = "users")

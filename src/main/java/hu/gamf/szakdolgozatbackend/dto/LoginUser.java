@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.dto;
+package hu.gamf.szakdolgozatbackend.dto;
 
 import javax.validation.constraints.NotBlank;
 

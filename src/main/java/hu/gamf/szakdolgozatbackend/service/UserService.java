@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.service;
+package hu.gamf.szakdolgozatbackend.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import hu.gamf.szakdolgozatbackend.entity.User;
+import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.repository.PatientRepository;
-import hu.gamf.szakdolgozatbackend.security.entity.User;
-import hu.gamf.szakdolgozatbackend.security.repository.UserRepository;
+import hu.gamf.szakdolgozatbackend.repository.UserRepository;
 
 @Service
 public class UserService {
@@ -28,6 +29,13 @@ public class UserService {
 	}
 
 	public void deleteUser(User user) {
+		userRepository.delete(user);		
+	}
+	
+	public void deleteUserById(Long id) {
+		User user = userRepository.findById(id).orElseThrow(
+				() -> new ApiRequestException("Nem található felhasználó ezzel az id-val!")
+			);
 		userRepository.delete(user);		
 	}
 

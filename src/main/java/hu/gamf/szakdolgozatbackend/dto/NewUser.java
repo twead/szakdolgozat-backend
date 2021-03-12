@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.dto;
+package hu.gamf.szakdolgozatbackend.dto;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -25,10 +25,6 @@ public class NewUser {
 	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
 	private Date dateOfBorn;
 	private String address;	
-	@NotBlank
-	private String idCard;
-	@NotBlank
-	private String socSecNum;
 	
 	
 	public String getUsername() {
@@ -66,18 +62,6 @@ public class NewUser {
 	}
 	public void setAddress(String address) {
 		this.address = address;
-	}
-	public String getIdCard() {
-		return idCard;
-	}
-	public void setIdCard(String idCard) {
-		this.idCard = idCard;
-	}
-	public String getSocSecNum() {
-		return socSecNum;
-	}
-	public void setSocSecNum(String socSecNum) {
-		this.socSecNum = socSecNum;
 	}
 	public Date getDateOfBorn() {
 		return dateOfBorn;

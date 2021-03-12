@@ -7,7 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import hu.gamf.szakdolgozatbackend.security.entity.User;
+import hu.gamf.szakdolgozatbackend.entity.User;
 
 @Service
 public class EmailService {

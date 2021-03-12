@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import hu.gamf.szakdolgozatbackend.security.entity.Role;
-import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
-import hu.gamf.szakdolgozatbackend.security.service.RoleService;
+import hu.gamf.szakdolgozatbackend.entity.Role;
+import hu.gamf.szakdolgozatbackend.enums.RoleName;
+import hu.gamf.szakdolgozatbackend.service.RoleService;
 
 @Component
 public class CreateRoles implements CommandLineRunner {

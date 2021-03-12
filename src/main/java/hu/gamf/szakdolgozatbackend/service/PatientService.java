@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import hu.gamf.szakdolgozatbackend.entity.Patient;
 import hu.gamf.szakdolgozatbackend.repository.PatientRepository;
-import hu.gamf.szakdolgozatbackend.security.service.UserService;
 
 @Service
 public class PatientService extends UserService{

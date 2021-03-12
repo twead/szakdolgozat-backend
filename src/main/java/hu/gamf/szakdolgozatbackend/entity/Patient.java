@@ -16,57 +16,86 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import hu.gamf.szakdolgozatbackend.security.entity.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @Entity
 @Table(name = "patient")
-public class Patient extends UserProfile{
+public class Patient{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotNull
-	@Column(unique = true, length = 8)
-	private String idCard;
-	//Social Security Number
+	@Column(length = 40)
+	private String name;
 	@NotNull
-	@Column(unique = true, length = 9)
-	private String socSecNum;
+	@Column(unique = true, length = 40)
+	private String email;
+	@NotNull
+	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
+	private Date dateOfBorn;
+	@NotNull
+	@Column(length = 60)
+	private String address;
+	private String picture;
 	private Long practitionerId;
 	
 	@JsonBackReference
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 
 	@OneToMany(mappedBy="patient")
     private List<Appointment> appointments;
 	
 	public Patient() {
-		super();
 	}
 	
-	public Patient(String name, String email, String address, Date dateOfBorn, 
-			String idCard, String socSecNum) {
-		super(name,email,address,dateOfBorn);
-		this.socSecNum = socSecNum;
-		this.idCard = idCard;
+	public Patient(String name, String email, String address, Date dateOfBorn) {
+		this.name = name;
+		this.email = email;
+		this.address = address;
+		this.dateOfBorn = dateOfBorn;
 	}
 
-	public String getIdCard() {
-		return idCard;
+	public String getName() {
+		return name;
 	}
 
-	public void setIdCard(String idCard) {
-		this.idCard = idCard;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getSocSecNum() {
-		return socSecNum;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setSocSecNum(String socSecNum) {
-		this.socSecNum = socSecNum;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getDateOfBorn() {
+		return dateOfBorn;
+	}
+
+	public void setDateOfBorn(Date dateOfBorn) {
+		this.dateOfBorn = dateOfBorn;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	public Long getPractitionerId() {
@@ -92,6 +121,5 @@ public class Patient extends UserProfile{
 	public void setAppointments(List<Appointment> appointments) {
 		this.appointments = appointments;
 	}
-	
 	
 }

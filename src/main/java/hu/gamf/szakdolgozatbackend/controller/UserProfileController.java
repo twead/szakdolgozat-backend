@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import hu.gamf.szakdolgozatbackend.dto.Message;
-import hu.gamf.szakdolgozatbackend.security.entity.User;
+import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
 import hu.gamf.szakdolgozatbackend.service.PatientService;
 
@@ -43,22 +42,16 @@ public class UserProfileController {
 	@PutMapping("/update/{username}")
 	public ResponseEntity<User> updateProfile(@PathVariable(value = "username") String username,
 			@Valid @RequestBody User userDetails) {
-		User user = patientService.findUserByUsername(username).get();
-		
-		if(patientService.findExistEmailForUpdate(userDetails.getPatient().getEmail(), userDetails.getId())!=null)
-			return new ResponseEntity(new Message("Ez az email foglalt!"), HttpStatus.BAD_REQUEST);
-		
+		User user = patientService.findUserByUsername(username).get();				
 		return new ResponseEntity(dashboardService.setUserByDetails(user, userDetails), HttpStatus.OK);
 	}
 
 	@PutMapping("/password-update/{username}")
 	public ResponseEntity updatePassword(@PathVariable(value = "username") String username,
-			@Valid @RequestBody String newPassword) {
-
+			@Valid @RequestBody String newPassword) {	
 		User user = patientService.findUserByUsername(username).get();
 		dashboardService.setPassword(user, newPassword);
-
-		return new ResponseEntity(new Message("Jelszó sikeresen megváltoztatva!"), HttpStatus.OK);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
 }

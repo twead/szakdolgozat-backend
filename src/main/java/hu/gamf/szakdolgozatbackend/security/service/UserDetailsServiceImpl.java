@@ -6,8 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import hu.gamf.szakdolgozatbackend.security.entity.User;
+import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.security.entity.UserPrincipal;
+import hu.gamf.szakdolgozatbackend.service.UserService;
 
 
 @Service

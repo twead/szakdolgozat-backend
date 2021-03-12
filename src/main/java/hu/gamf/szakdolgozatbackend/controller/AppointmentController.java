@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import hu.gamf.szakdolgozatbackend.dto.Message;
 import hu.gamf.szakdolgozatbackend.entity.Appointment;
 import hu.gamf.szakdolgozatbackend.entity.Practitioner;
+import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.entity.Worktime;
-import hu.gamf.szakdolgozatbackend.security.entity.User;
 import hu.gamf.szakdolgozatbackend.service.AppointmentService;
 import hu.gamf.szakdolgozatbackend.service.PractitionerService;
 import hu.gamf.szakdolgozatbackend.service.WorktimeService;
@@ -57,18 +56,12 @@ public class AppointmentController {
 	@PutMapping("/select-practitioner/{username}")
 	public ResponseEntity savePractitioner(@PathVariable(value = "username") String username,
 			@Valid @RequestBody Long practitionerId) {
-
 		User user = practitionerService.findUserByUsername(username).get();
-
-		if (user.equals(null))
-			return new ResponseEntity(new Message("Nem létezik felhasználó!"), HttpStatus.BAD_REQUEST);
-
 		user.getPatient().setPractitionerId(practitionerId);
 		practitionerService.saveUser(user);
 
-		return new ResponseEntity(new Message("Háziorvosod sikeresen kiválasztottad!"), HttpStatus.OK);
+		return new ResponseEntity("Háziorvosod sikeresen kiválasztottad!", HttpStatus.OK);
 	}
-	
 	
 	//-------------------------PATIENT HAS ALREADY SELECTED A PRACTITIONER-------------------------
 
@@ -94,8 +87,10 @@ public class AppointmentController {
 	public void SetPractitionerWorkingTime(@PathVariable(value = "id") Long practitionerId,
 			@Valid @RequestBody List<Worktime> workingTimePerDay) {
 		Practitioner practitioner = practitionerService.findPractitionerById(practitionerId).get();
-		if(!workingTimePerDay.equals(null))
-			worktimeService.saveAllWorktime(workingTimePerDay);
+		if(!workingTimePerDay.equals(null)) {
+			practitioner.setWorktimes(workingTimePerDay);
+			practitionerService.save(practitioner);
+		}
 	}
 	
 	@GetMapping("/practitioner-active-time/{id}")

@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.entity;
+package hu.gamf.szakdolgozatbackend.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
+import hu.gamf.szakdolgozatbackend.enums.RoleName;
 
 
 @Entity

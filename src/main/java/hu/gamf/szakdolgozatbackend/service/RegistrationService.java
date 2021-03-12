@@ -1,4 +1,4 @@
-package hu.gamf.szakdolgozatbackend.security.service;
+package hu.gamf.szakdolgozatbackend.service;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -12,15 +12,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import hu.gamf.szakdolgozatbackend.dto.LoginUser;
+import hu.gamf.szakdolgozatbackend.dto.NewUser;
 import hu.gamf.szakdolgozatbackend.entity.Patient;
+import hu.gamf.szakdolgozatbackend.entity.Role;
+import hu.gamf.szakdolgozatbackend.entity.User;
+import hu.gamf.szakdolgozatbackend.enums.RoleName;
+import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.security.dto.JwtDto;
-import hu.gamf.szakdolgozatbackend.security.dto.LoginUser;
-import hu.gamf.szakdolgozatbackend.security.dto.NewUser;
-import hu.gamf.szakdolgozatbackend.security.entity.Role;
-import hu.gamf.szakdolgozatbackend.security.entity.User;
-import hu.gamf.szakdolgozatbackend.security.enums.RoleName;
 import hu.gamf.szakdolgozatbackend.security.jwt.JwtProvider;
-import hu.gamf.szakdolgozatbackend.service.EmailService;
 
 @Service
 public class RegistrationService {
@@ -45,13 +45,16 @@ public class RegistrationService {
 
 	public void setRolesSaveUserAndProfile(NewUser newUser) {
 		
+		if(userService.existsUserByUsername(newUser.getUsername()))
+			throw new ApiRequestException("Felhasználónév foglalt!");
+		if(userService.existsUserByEmail(newUser.getEmail()))
+			throw new ApiRequestException("Email cím foglalt!");
+		
 		Patient patient = new Patient(
 				newUser.getName(),
 				newUser.getEmail(),
 				newUser.getAddress(),
-				newUser.getDateOfBorn(),
-				newUser.getIdCard(),
-				newUser.getSocSecNum()
+				newUser.getDateOfBorn()
 				);		
 		
 		User user = new User(
@@ -65,7 +68,7 @@ public class RegistrationService {
 		patient.setUser(user);
 		
 		Set<Role> roles = new HashSet<>();
-		roles.add(roleService.getByRoleName(RoleName.ROLE_PRACTITIONER).get());
+		roles.add(roleService.getByRoleName(RoleName.ROLE_PATIENT).get());
 		if(newUser.getRoles().contains("practitioner")) {	
 			roles.add(roleService.getByRoleName(RoleName.ROLE_PRACTITIONER).get());
 		}
@@ -79,16 +82,6 @@ public class RegistrationService {
 		emailService.sendActivationEmail(user);
 	}
 	
-	public JwtDto setAuthenticationAndToken (LoginUser loginUser) {
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword())
-			);	
-	SecurityContextHolder.getContext().setAuthentication(authentication);
-	String jwt = jwtProvider.generateToken(authentication);
-	JwtDto jwtDto = new JwtDto(jwt);
-	return jwtDto;
-	}
-	
 	private String generatedKey() {
 		Random random = new Random();
 		char[] code = new char[16];
@@ -98,15 +91,37 @@ public class RegistrationService {
 		return new String(code);
 	}
 	
-	public String userActivation(String code) {
-		User user = userService.userActivation(code).get();
-		if (user == null)
-			return "noresult";
-
+	public JwtDto setAuthenticationAndToken (LoginUser loginUser) {
+		
+		User user = userService.findUserByUsername(loginUser.getUsername()).orElseThrow(
+				() -> new ApiRequestException("Hibás felhasználónév vagy jelszó!"));
+			
+		if(!user.getActivation().isEmpty())
+			throw new ApiRequestException("Erősítsd meg az emailedet!");
+		
+		Authentication authentication;
+		try {
+		authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword())
+			);
+		}
+		catch(Exception e) {
+			throw new ApiRequestException("Hibás felhasználónév vagy jelszó!");
+		}
+		
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String jwt = jwtProvider.generateToken(authentication);
+		JwtDto jwtDto = new JwtDto(jwt);
+		return jwtDto;
+	}
+	
+	public void userActivation(String code) {
+		User user = userService.userActivation(code).orElseThrow(
+				() -> new ApiRequestException("Hibás aktiváció!"));
+		
 		user.setEnabled(true);
 		user.setActivation("");
 		userService.saveUser(user);
-		return "ok";
 	}
 	
 }
