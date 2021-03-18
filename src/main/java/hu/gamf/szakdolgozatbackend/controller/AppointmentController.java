@@ -1,5 +1,7 @@
 package hu.gamf.szakdolgozatbackend.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -18,11 +20,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import hu.gamf.szakdolgozatbackend.dto.AppointmentDto;
 import hu.gamf.szakdolgozatbackend.entity.Appointment;
+import hu.gamf.szakdolgozatbackend.entity.Patient;
 import hu.gamf.szakdolgozatbackend.entity.Practitioner;
 import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.entity.Worktime;
+import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.service.AppointmentService;
+import hu.gamf.szakdolgozatbackend.service.PatientService;
 import hu.gamf.szakdolgozatbackend.service.PractitionerService;
 import hu.gamf.szakdolgozatbackend.service.WorktimeService;
 
@@ -35,13 +41,15 @@ public class AppointmentController {
 	private AppointmentService appointmentService;
 	private WorktimeService worktimeService;
 	private PractitionerService practitionerService;
+	private PatientService patientService;
 	
 	@Autowired
 	public AppointmentController(AppointmentService appointmentService, WorktimeService worktimeService,
-			PractitionerService practitionerService) {
+			PractitionerService practitionerService, PatientService patientService) {
 		this.appointmentService = appointmentService;
 		this.worktimeService = worktimeService;
 		this.practitionerService = practitionerService;
+		this.patientService = patientService;
 	}
 	
 	//-------------------------PATIENT HASN'T SELECTED PRACTITIONER YET-------------------------
@@ -52,23 +60,40 @@ public class AppointmentController {
 		List<User> practitionerList = practitionerService.findAllPractitionerExceptMe(username);
 		return practitionerList;
 	}
-
-	@PutMapping("/select-practitioner/{username}")
-	public ResponseEntity savePractitioner(@PathVariable(value = "username") String username,
+	
+	@PutMapping("/update-practitioner/{username}")
+	public ResponseEntity updatePractitioner(@PathVariable(value = "username") String username,
 			@Valid @RequestBody Long practitionerId) {
 		User user = practitionerService.findUserByUsername(username).get();
 		user.getPatient().setPractitionerId(practitionerId);
 		practitionerService.saveUser(user);
 
-		return new ResponseEntity("Háziorvosod sikeresen kiválasztottad!", HttpStatus.OK);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
 	//-------------------------PATIENT HAS ALREADY SELECTED A PRACTITIONER-------------------------
 
-	@PostMapping("/create")
-	public void MadeAnAppointment(@RequestBody Appointment appointment) {
-		if(!appointment.equals(null))
-			appointmentService.saveAppointment(appointment);
+	@PostMapping("/create/{username}")
+	public void MadeAnAppointment(@PathVariable(value = "username") String username,
+			@RequestBody AppointmentDto appointmentDto) {
+		
+		User user = patientService.findUserByUsername(username).orElseThrow(
+					() -> new ApiRequestException("Nem található felhasználó")
+				);
+		
+		Appointment appointment = new Appointment();
+		appointment.setPatient(user.getPatient());
+		//User user2 = patientService.findUserById(user.getPatient().getPractitionerId()).get();
+		Practitioner practitioner = 
+				practitionerService.findPractitionerById(user.getPatient().getPractitionerId()).get();
+		appointment.setPractitioner(practitioner);
+
+		appointment.setMessage(appointmentDto.getMessage());
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(appointmentDto.getTime());
+//		LocalDateTime newDate = LocalDateTime.parse(appointmentDto.getMessage(),formatter);
+		
+		appointment.setTime(appointmentDto.getTime());
+		appointmentService.saveAppointment(appointment);
 	}
 	
 	@DeleteMapping("/delete/{id}")
@@ -77,11 +102,25 @@ public class AppointmentController {
 			appointmentService.deleteAppointmentById(appointmentId);
 	}
 	
-	@GetMapping("/show/{id}")
-	public List<Appointment> ShowPatientAppointments(@PathVariable(value = "id") Long patientId){
-		List appointments = appointmentService.findAllAppointmentByPatientId(patientId);
+	@GetMapping("/show/{username}")
+	public List<Appointment> ShowPatientAppointments(@PathVariable(value = "username") String username){
+		User patient = patientService.findUserByUsername(username).get();
+		List<Appointment> appointments = 
+				appointmentService.findAllByPatientIdAndPractitionerId(patient.getId(), patient.getPatient().getPractitionerId());
+		
 		return appointments;
 	}
+	
+	
+	@GetMapping("/show-business-hours/{username}")
+	public List<Appointment> ShowPractitionerAppointments(@PathVariable(value = "username") String username){
+		User patient = patientService.findUserByUsername(username).get();
+		List<Appointment> appointments = appointmentService.findAllByPractitionerId(patient.getId(), patient.getPatient().getPractitionerId());
+		
+		return appointments;
+	}
+	
+	
 	
 	@PutMapping("/set-time/{id}")
 	public void SetPractitionerWorkingTime(@PathVariable(value = "id") Long practitionerId,

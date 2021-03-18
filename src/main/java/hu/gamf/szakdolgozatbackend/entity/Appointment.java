@@ -1,5 +1,7 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,49 +11,38 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "appointment")
-public class Appointment {
+public class Appointment implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Long practitionerId;
-	private short year;
-	private short month;
-	private short day;
-	private short hour;
+	private String time;
+	private String message;
 	
 	@ManyToOne
     private Patient patient;
 	
-	public Long getPractitionerId() {
-		return practitionerId;
+	@ManyToOne
+    private Practitioner practitioner;
+	
+	
+	public Long getId() {
+		return id;
 	}
-	public void setPractitionerId(Long practitionerId) {
-		this.practitionerId = practitionerId;
+	
+	public String getTime() {
+		return time;
 	}
-	public short getYear() {
-		return year;
+
+	public void setTime(String time) {
+		this.time = time;
 	}
-	public void setYear(short year) {
-		this.year = year;
+
+	public String getMessage() {
+		return message;
 	}
-	public short getMonth() {
-		return month;
-	}
-	public void setMonth(short month) {
-		this.month = month;
-	}
-	public short getDay() {
-		return day;
-	}
-	public void setDay(short day) {
-		this.day = day;
-	}
-	public short getHour() {
-		return hour;
-	}
-	public void setHour(short hour) {
-		this.hour = hour;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	public Patient getPatient() {
 		return patient;
@@ -59,5 +50,11 @@ public class Appointment {
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
-	
+	public Practitioner getPractitioner() {
+		return practitioner;
+	}
+	public void setPractitioner(Practitioner practitioner) {
+		this.practitioner = practitioner;
+	}
+
 }

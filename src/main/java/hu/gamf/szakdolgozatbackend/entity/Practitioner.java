@@ -1,5 +1,6 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -16,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "practitioner")
-public class Practitioner {
+public class Practitioner implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,16 +25,24 @@ public class Practitioner {
 	
 	private String workingAddress;
 	
-	@JsonBackReference
+	@JsonBackReference("harmadik")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 	
 	@OneToMany(mappedBy="practitioner")
     private List<Worktime> worktimes;
+	
+	@JsonBackReference("negyedik")
+	@OneToMany(mappedBy="practitioner")
+    private List<Appointment> appointments;
 
 	public Practitioner() {
 	}
-	
+
+	public Long getId() {
+		return id;
+	}
+
 	public String getWorkingAddress() {
 		return workingAddress;
 	}
