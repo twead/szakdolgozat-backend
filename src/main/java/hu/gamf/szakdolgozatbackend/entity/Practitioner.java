@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,16 +24,21 @@ public class Practitioner implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column
 	private String workingAddress;
+	
+	@Column
+	private boolean worksOnHolidays;
 	
 	@JsonBackReference("harmadik")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 	
+	
 	@OneToMany(mappedBy="practitioner")
     private List<Worktime> worktimes;
 	
-	@JsonBackReference("negyedik")
+	
 	@OneToMany(mappedBy="practitioner")
     private List<Appointment> appointments;
 
@@ -49,6 +55,14 @@ public class Practitioner implements Serializable {
 
 	public void setWorkingAddress(String workingAddress) {
 		this.workingAddress = workingAddress;
+	}
+	
+	public boolean getWorksOnHolidays() {
+		return worksOnHolidays;
+	}
+
+	public void setWorksOnHolidays(boolean worksOnHolidays) {
+		this.worksOnHolidays = worksOnHolidays;
 	}
 
 	public User getUser() {

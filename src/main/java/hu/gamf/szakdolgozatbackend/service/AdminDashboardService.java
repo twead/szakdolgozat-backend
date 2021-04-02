@@ -1,8 +1,11 @@
 package hu.gamf.szakdolgozatbackend.service;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import hu.gamf.szakdolgozatbackend.entity.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,8 +16,10 @@ import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.enums.RoleName;
 import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AdminDashboardService {
 
 	private PatientService patientService;
@@ -22,15 +27,20 @@ public class AdminDashboardService {
 	private PasswordEncoder passwordEncoder;
 	private RoleService roleService;
 	private PractitionerService practitionerService;
+//	private WorktimeService worktimeService;
+	private AppointmentService appointmentService;
 	
 	@Autowired
 	public AdminDashboardService(PatientService patientService, UserRepository userRepository,
-			PasswordEncoder passwordEncoder, RoleService roleService, PractitionerService practitionerService) {
+				PasswordEncoder passwordEncoder, RoleService roleService, PractitionerService practitionerService,
+				AppointmentService appointmentService) {
 		this.patientService = patientService;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.roleService = roleService;
 		this.practitionerService = practitionerService;
+//		this.worktimeService = worktimeService;
+		this.appointmentService = appointmentService;
 	}
 
 	public void setPassword(User user, String newPassword) {
@@ -52,13 +62,42 @@ public class AdminDashboardService {
 		roles.add(roleService.getByRoleName(RoleName.ROLE_PATIENT).get());
 		roles.add(roleService.getByRoleName(RoleName.ROLE_PRACTITIONER).get());
 		user.setRoles(roles);
-		
-		Practitioner practitioner = new Practitioner();
-		practitioner.setUser(user);
-		
-		user.setPractitioner(practitioner);	
-		
-		practitionerService.saveUser(user);
+
+		try {
+			//Practitioner practitioner = practitionerService.findPractitionerByUserId(user.getId());
+
+			if(practitionerService.existsPractitionerByUserId(user.getId())) {
+				user.setPractitioner(practitionerService.findPractitionerByUserId(user.getId()));
+				practitionerService.saveUser(user);
+			}
+			else {
+				Practitioner practitioner = new Practitioner();
+				practitioner.setUser(user);
+				user.setPractitioner(practitioner);
+				practitionerService.saveUser(user);
+			}
+		} catch (Exception e) {
+			System.out.println("null volt");
+		}
+
+	}
+	
+	public void removePractitionerRoleToUserById(Long id) {
+		User user = patientService.findUserById(id).orElseThrow(
+				() -> new ApiRequestException("Nem létezik a felhasználó!")
+			);
+
+		appointmentService.deleteAppointmentByPractitionerId(user.getPractitioner().getId());
+		List<Patient> usersAtPractitioner = patientService.findAllPatientByPractitionerId(user.getPractitioner().getId());
+		for(Patient patient : usersAtPractitioner){
+			patient.setPractitionerId(null);
+			patientService.savePatient(patient);
+		}
+
+		Set<Role> roles = new HashSet<>();
+		roles.add(roleService.getByRoleName(RoleName.ROLE_PATIENT).get());
+		user.setRoles(roles);
+		patientService.saveUser(user);
 	}
 	
 	public User updatePatientInDashboard(Long id, User userDetails) {
@@ -87,5 +126,5 @@ public class AdminDashboardService {
 		userRepository.save(user);
 		return user;		
 	}
-	
+
 }

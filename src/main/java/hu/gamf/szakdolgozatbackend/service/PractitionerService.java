@@ -26,4 +26,10 @@ public class PractitionerService extends UserService{
 		practitionerRepository.save(practitioner);		
 	}
 	
+	public void delete(Practitioner practitioner) {
+		practitionerRepository.delete(practitioner);
+	}
+
+	public Practitioner findPractitionerByUserId(Long id){ return practitionerRepository.findByUserId(id); }
+	public boolean existsPractitionerByUserId(Long id){ return practitionerRepository.existsByUserId(id); }
 }

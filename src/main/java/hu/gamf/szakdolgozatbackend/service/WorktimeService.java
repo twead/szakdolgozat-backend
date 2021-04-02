@@ -1,6 +1,7 @@
 package hu.gamf.szakdolgozatbackend.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,12 @@ public class WorktimeService {
 		this.worktimeRepository = worktimeRepository;
 	}
 
-	public void saveAllWorktime(List<Worktime> workingTimePerDay) {
-		worktimeRepository.saveAll(workingTimePerDay);
+	public Optional<Worktime> findWorktimeById(Long id) {
+		return worktimeRepository.findById(id);
+	}
+	
+	public void saveWorktime(Worktime worktime) {
+		worktimeRepository.save(worktime);
 	}
 
 	public List<Worktime> findAllWorktimeByPractitionerId(Long practitionerId) {

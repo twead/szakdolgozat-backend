@@ -39,6 +39,9 @@ public class Patient implements Serializable{
 	@NotNull
 	@Column(length = 60)
 	private String address;
+	@NotNull
+	@Column(length = 20)
+	private String phoneNumber;
 	private String picture;
 	private Long practitionerId;
 	
@@ -46,18 +49,19 @@ public class Patient implements Serializable{
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 
-	@JsonBackReference("masodik")
+	
 	@OneToMany(mappedBy="patient")
     private List<Appointment> appointments;
 	
 	public Patient() {
 	}
 	
-	public Patient(String name, String email, String address, Date dateOfBorn) {
+	public Patient(String name, String email, String address, Date dateOfBorn, String phoneNumber) {
 		this.name = name;
 		this.email = email;
 		this.address = address;
 		this.dateOfBorn = dateOfBorn;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getName() {
@@ -116,12 +120,16 @@ public class Patient implements Serializable{
 		this.user = user;
 	}
 
-	public List<Appointment> getAppointments() {
-		return appointments;
+	public List<Appointment> getAppointments() { return appointments; }
+
+	public void setAppointments(List<Appointment> appointments) { this.appointments = appointments; }
+
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setAppointments(List<Appointment> appointments) {
-		this.appointments = appointments;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
-	
+
 }

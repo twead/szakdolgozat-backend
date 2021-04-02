@@ -2,12 +2,10 @@ package hu.gamf.szakdolgozatbackend.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "worktime")
@@ -17,9 +15,10 @@ public class Worktime implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private short day;
-	private short fromTime;
-	private short toTime;
+	private String fromTime;
+	private String toTime;
 	
+	@JsonBackReference("otodik")
 	@ManyToOne
     private Practitioner practitioner;
 
@@ -31,20 +30,20 @@ public class Worktime implements Serializable {
 		this.day = day;
 	}
 
-	public short getFromTime() {
+	public String getFromTime() {
 		return fromTime;
 	}
 
-	public void setFromTime(short from) {
-		this.fromTime = from;
+	public void setFromTime(String fromTime) {
+		this.fromTime = fromTime;
 	}
 
-	public short getToTime() {
+	public String getToTime() {
 		return toTime;
 	}
 
-	public void setToTime(short to) {
-		this.toTime = to;
+	public void setToTime(String toTime) {
+		this.toTime = toTime;
 	}
 
 	public Practitioner getPractitioner() {
