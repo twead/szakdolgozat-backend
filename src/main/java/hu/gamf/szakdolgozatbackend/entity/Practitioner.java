@@ -1,8 +1,10 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,30 +18,51 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "practitioner")
-public class Practitioner {
+public class Practitioner implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column
 	private String workingAddress;
 	
-	@JsonBackReference
+	@Column
+	private boolean worksOnHolidays;
+	
+	@JsonBackReference("harmadik")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 	
+	
 	@OneToMany(mappedBy="practitioner")
     private List<Worktime> worktimes;
+	
+	
+	@OneToMany(mappedBy="practitioner")
+    private List<Appointment> appointments;
 
 	public Practitioner() {
 	}
-	
+
+	public Long getId() {
+		return id;
+	}
+
 	public String getWorkingAddress() {
 		return workingAddress;
 	}
 
 	public void setWorkingAddress(String workingAddress) {
 		this.workingAddress = workingAddress;
+	}
+	
+	public boolean getWorksOnHolidays() {
+		return worksOnHolidays;
+	}
+
+	public void setWorksOnHolidays(boolean worksOnHolidays) {
+		this.worksOnHolidays = worksOnHolidays;
 	}
 
 	public User getUser() {

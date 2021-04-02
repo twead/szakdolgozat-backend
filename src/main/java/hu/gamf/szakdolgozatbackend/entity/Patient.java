@@ -1,5 +1,6 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @Entity
 @Table(name = "patient")
-public class Patient{
+public class Patient implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,24 +39,29 @@ public class Patient{
 	@NotNull
 	@Column(length = 60)
 	private String address;
+	@NotNull
+	@Column(length = 20)
+	private String phoneNumber;
 	private String picture;
 	private Long practitionerId;
 	
-	@JsonBackReference
+	@JsonBackReference("elso")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 
+	
 	@OneToMany(mappedBy="patient")
     private List<Appointment> appointments;
 	
 	public Patient() {
 	}
 	
-	public Patient(String name, String email, String address, Date dateOfBorn) {
+	public Patient(String name, String email, String address, Date dateOfBorn, String phoneNumber) {
 		this.name = name;
 		this.email = email;
 		this.address = address;
 		this.dateOfBorn = dateOfBorn;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getName() {
@@ -114,12 +120,16 @@ public class Patient{
 		this.user = user;
 	}
 
-	public List<Appointment> getAppointments() {
-		return appointments;
+	public List<Appointment> getAppointments() { return appointments; }
+
+	public void setAppointments(List<Appointment> appointments) { this.appointments = appointments; }
+
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setAppointments(List<Appointment> appointments) {
-		this.appointments = appointments;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
-	
+
 }

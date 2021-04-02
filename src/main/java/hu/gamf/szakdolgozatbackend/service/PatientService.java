@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import hu.gamf.szakdolgozatbackend.entity.Patient;
 import hu.gamf.szakdolgozatbackend.repository.PatientRepository;
 
+import java.util.List;
+
 @Service
 public class PatientService extends UserService{
 	
@@ -18,6 +20,14 @@ public class PatientService extends UserService{
 
 	public Patient findExistEmailForUpdate(String email, Long id) {		
 		return patientRepository.findExistEmailForUpdate(email, id);
+	}
+
+	public List<Patient> findAllPatientByPractitionerId(Long id){
+		return patientRepository.findAllByPractitionerId(id);
+	}
+
+	public void savePatient(Patient patient){
+		patientRepository.save(patient);
 	}
 	
 }

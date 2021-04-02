@@ -54,7 +54,8 @@ public class RegistrationService {
 				newUser.getName(),
 				newUser.getEmail(),
 				newUser.getAddress(),
-				newUser.getDateOfBorn()
+				newUser.getDateOfBorn(),
+				newUser.getPhoneNumber()
 				);		
 		
 		User user = new User(

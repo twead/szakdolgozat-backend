@@ -24,7 +24,8 @@ public class NewUser {
 	
 	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
 	private Date dateOfBorn;
-	private String address;	
+	private String address;
+	private String phoneNumber;
 	
 	
 	public String getUsername() {
@@ -69,5 +70,11 @@ public class NewUser {
 	public void setDateOfBorn(Date dateOfBorn) {
 		this.dateOfBorn = dateOfBorn;
 	}
-	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
 }

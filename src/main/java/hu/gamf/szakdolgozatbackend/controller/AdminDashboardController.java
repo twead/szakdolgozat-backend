@@ -68,10 +68,16 @@ public class AdminDashboardController {
 		return new ResponseEntity(user, HttpStatus.OK);
 	}
 	
-	@GetMapping("/patients/update-to-practitioner/{id}")
-	public ResponseEntity updatePatientToPractitioner(@PathVariable(value = "id") Long userId) {		
+	@GetMapping("/patients/upgrade-to-practitioner/{id}")
+	public ResponseEntity upgradePatientToPractitioner(@PathVariable(value = "id") Long userId) {		
 		dashboardService.setPractitionerRoleToUserById(userId);		
 		return new ResponseEntity(HttpStatus.OK);		
+	}
+	
+	@GetMapping("/practitioner/downgrade-to-patient/{id}")
+	public ResponseEntity downgradePractitionerToPatient(@PathVariable(value = "id") Long userId) {		
+		dashboardService.removePractitionerRoleToUserById(userId);		
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@DeleteMapping("/patients/delete/{id}")
