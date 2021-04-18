@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long>{
 	boolean existsByEmail(String email);
+	Patient findByEmail(String email);
 	
 	@Query(value = "select * from patient where patient.email = ?1 and patient.id != ?2", nativeQuery = true)
 	Patient findExistEmailForUpdate(String email, Long id);

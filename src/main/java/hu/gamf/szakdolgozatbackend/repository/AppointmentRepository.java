@@ -23,5 +23,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
 	
 	public void deleteAllByPractitionerId(Long id);
 
-	public List<Appointment> findAllByPractitionerId(Long id);
+	public List<Appointment> findAllByPractitionerIdOrderByTime(Long id);
 }

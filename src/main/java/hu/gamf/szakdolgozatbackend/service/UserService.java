@@ -3,6 +3,7 @@ package hu.gamf.szakdolgozatbackend.service;
 import java.util.List;
 import java.util.Optional;
 
+import hu.gamf.szakdolgozatbackend.entity.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +67,9 @@ public class UserService {
 	public void saveUser(User user) {
 		userRepository.save(user);
 	}
+
+	public Patient findUserByEmail(String email) { return patientRepository.findByEmail(email); }
+
+	public User findUserByResetPasswordCode(String code){ return userRepository.findByResetPasswordCode(code); }
 
 }

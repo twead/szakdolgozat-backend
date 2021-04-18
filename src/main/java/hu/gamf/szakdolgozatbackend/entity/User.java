@@ -33,6 +33,8 @@ public class User implements Serializable {
 	private String password;
 	@Column(length = 16)
 	private String activation;
+	@Column(length = 16)
+	private String resetPasswordCode;
 	private boolean isEnabled;
 	
 	@NotNull
@@ -87,6 +89,10 @@ public class User implements Serializable {
 	public void setActivation(String activation) {
 		this.activation = activation;
 	}
+
+	public String getResetPasswordCode() { return resetPasswordCode; }
+
+	public void setResetPasswordCode(String resetCode) { this.resetPasswordCode = resetCode; }
 
 	public boolean isEnabled() {
 		return isEnabled;

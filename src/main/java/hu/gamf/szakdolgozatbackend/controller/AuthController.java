@@ -5,6 +5,9 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import hu.gamf.szakdolgozatbackend.dto.ForgotPasswordDto;
+import hu.gamf.szakdolgozatbackend.dto.UpdatePasswordDto;
+import hu.gamf.szakdolgozatbackend.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +48,7 @@ public class AuthController {
 	}
 	
 	@GetMapping(path = "/activation/{code}")
-	public ResponseEntity activation(@PathVariable("code") String code, HttpServletResponse response) {	
+	public ResponseEntity activation(@PathVariable("code") String code) {
 		registrationService.userActivation(code);
 		return new ResponseEntity(HttpStatus.OK);
 	}
@@ -61,6 +64,24 @@ public class AuthController {
 		String token = jwtProvider.refreshToken(jwtDto);
 		JwtDto jwt = new JwtDto(token);
 		return new ResponseEntity(jwt, HttpStatus.OK);
+	}
+
+	@PostMapping(path = "/forgot-password")
+	public void forgotPassword(@RequestBody ForgotPasswordDto forgotPasswordDto){
+		User user = registrationService.findUserByEmail(forgotPasswordDto.getEmail());
+		registrationService.sendForgotPasswordMessage(user);
+	}
+
+	@GetMapping(path = "/reset-password/{code}")
+	public ResponseEntity<User> resetPassword(@PathVariable("code") String code) {
+		User user = registrationService.findUserByResetPasswordCode(code);
+		return new ResponseEntity(user, HttpStatus.OK);
+	}
+
+	@PostMapping(path = "/update-password/{code}")
+	public void updatePassword(@PathVariable("code") String code, @RequestBody UpdatePasswordDto updatePasswordDto){
+		User user = registrationService.findUserByResetPasswordCode(code);
+		registrationService.updateForgotPassword(user, updatePasswordDto.getPassword());
 	}
 	
 }

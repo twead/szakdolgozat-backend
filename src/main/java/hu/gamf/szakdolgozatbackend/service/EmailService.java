@@ -35,4 +35,16 @@ public class EmailService {
 		javaMailSender.send(mail);
 	}
 
+	public void sendForgotPasswordEmail(User user) throws MailException {
+		SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo(user.getPatient().getEmail());
+		mail.setFrom("onlinehealthcaresystem@email.com");
+		mail.setSubject("Jelszó megváltoztatása!");
+		mail.setText("Kedves " + user.getPatient().getName()
+				+ "! \n \nAz alábbi linken tudod megváltoztatni a jelszavadat:\n\n"
+				+ Url + "auth/reset-password/" + user.getResetPasswordCode());
+
+		javaMailSender.send(mail);
+	}
+
 }

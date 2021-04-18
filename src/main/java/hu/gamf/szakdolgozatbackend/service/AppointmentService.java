@@ -75,5 +75,5 @@ public class AppointmentService {
 		appointmentRepository.deleteAllByPractitionerId(id);
 	}
 
-	public List<Appointment> findAllClientByPractitionerId(Long id) { return appointmentRepository.findAllByPractitionerId(id); }
+	public List<Appointment> findAllClientByPractitionerId(Long id) { return appointmentRepository.findAllByPractitionerIdOrderByTime(id); }
 }

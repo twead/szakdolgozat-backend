@@ -124,5 +124,28 @@ public class RegistrationService {
 		user.setActivation("");
 		userService.saveUser(user);
 	}
-	
+
+	public User findUserByEmail(String email){
+		return userService.findUserByEmail(email).getUser();
+	}
+
+	public void sendForgotPasswordMessage(User user){
+		user.setResetPasswordCode(generatedKey());
+		userService.saveUser(user);
+		emailService.sendForgotPasswordEmail(user);
+	}
+
+	public User findUserByResetPasswordCode(String code){
+		return userService.findUserByResetPasswordCode(code);
+	}
+
+	public User findUserById(Long id){
+		return userService.findUserById(id).get();
+	}
+
+	public void updateForgotPassword(User user, String newPassword){
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setResetPasswordCode("");
+		userService.saveUser(user);
+	}
 }

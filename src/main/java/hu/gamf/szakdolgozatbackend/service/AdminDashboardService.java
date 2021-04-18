@@ -27,19 +27,19 @@ public class AdminDashboardService {
 	private PasswordEncoder passwordEncoder;
 	private RoleService roleService;
 	private PractitionerService practitionerService;
-//	private WorktimeService worktimeService;
+	private WorktimeService worktimeService;
 	private AppointmentService appointmentService;
 	
 	@Autowired
 	public AdminDashboardService(PatientService patientService, UserRepository userRepository,
 				PasswordEncoder passwordEncoder, RoleService roleService, PractitionerService practitionerService,
-				AppointmentService appointmentService) {
+								 WorktimeService worktimeService, AppointmentService appointmentService) {
 		this.patientService = patientService;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.roleService = roleService;
 		this.practitionerService = practitionerService;
-//		this.worktimeService = worktimeService;
+		this.worktimeService = worktimeService;
 		this.appointmentService = appointmentService;
 	}
 
@@ -93,6 +93,8 @@ public class AdminDashboardService {
 			patient.setPractitionerId(null);
 			patientService.savePatient(patient);
 		}
+
+		worktimeService.deleteAllWorktimeByPractitionerId(user.getPractitioner().getId());
 
 		Set<Role> roles = new HashSet<>();
 		roles.add(roleService.getByRoleName(RoleName.ROLE_PATIENT).get());

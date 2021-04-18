@@ -57,7 +57,6 @@ public class PractitionerDashboardController {
     @PutMapping("/clients/update-time/{id}")
     public ResponseEntity<Appointment> updatePatient(@PathVariable(value = "id") Long appointmentId,
                                                      @Valid @RequestBody AppointmentDto appointmentDto) {
-        //User user = dashboardService.updatePatientInDashboard(userId, userDetails);
         Appointment appointment = appointmentService.findAppointmentById(appointmentId).orElseThrow(
                 () -> new ApiRequestException("Ez a foglalás nem található!")
         );

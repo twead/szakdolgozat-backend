@@ -148,6 +148,12 @@ public class AppointmentController {
 		return appointments;
 	}
 
+	@GetMapping("/get-business-hours/{username}")
+	public List<Worktime> GetPractitionerWorkingTime(@PathVariable(value = "username") String username) {
+		User user = userService.findUserByUsername(username).get();
+		return user.getPractitioner().getWorktimes();
+	}
+
 	@PutMapping("/set-business-hours/{username}")
 	public void SetPractitionerWorkingTime(@PathVariable(value = "username") String username,
 			@Valid @RequestBody @Nullable Worktime[] worktimes) {
@@ -161,10 +167,10 @@ public class AppointmentController {
 				worktime.setDay(worktimes[i].getDay());
 				if (!worktimes[i].getFromTime().equals("")) {
 					worktime.setFromTime(worktimes[i].getFromTime());
-				}else worktime.setFromTime("23:58");
+				}else worktime.setFromTime("0:00");
 				if (!worktimes[i].getToTime().equals("")) {
 					worktime.setToTime(worktimes[i].getToTime());
-				}else worktime.setToTime("23:59");
+				}else worktime.setToTime("0:00");
 				worktime.setPractitioner(user.getPractitioner());
 				worktimeService.saveWorktime(worktime);
 			} else {
@@ -172,10 +178,10 @@ public class AppointmentController {
 				worktime.setDay(worktimes[i].getDay());
 				if (!worktimes[i].getFromTime().equals("")) {
 					worktime.setFromTime(worktimes[i].getFromTime());
-				}else worktime.setFromTime("23:58");
+				}else worktime.setFromTime("0:00");
 				if (!worktimes[i].getToTime().equals("")) {
 					worktime.setToTime(worktimes[i].getToTime());
-				}else worktime.setToTime("23:59");
+				}else worktime.setToTime("0:00");
 				worktime.setPractitioner(user.getPractitioner());
 				worktimeService.saveWorktime(worktime);
 			}
@@ -190,6 +196,14 @@ public class AppointmentController {
 			throw new ApiRequestException("Ez a felhasználó nem létezik");
 		user.getPractitioner().setWorksOnHolidays(worksOnHoliday.isWorksOnHoliday());
 		userService.saveUser(user);
+	}
+
+	@GetMapping("/works-on-holidays/{username}")
+	public HolidaysDto HolidayWorksForWorktimeSettings(@PathVariable(value = "username") String username){
+		User user = userService.findUserByUsername(username).get();
+		HolidaysDto worksOnHolidays = new HolidaysDto();
+		worksOnHolidays.setWorksOnHoliday(user.getPractitioner().getWorksOnHolidays());
+		return worksOnHolidays;
 	}
 	
 	@GetMapping("/my-practitioner-works-on-holidays/{username}")

@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByUsername(String username);
 	boolean existsByUsername(String username);
 	Optional<User> findByActivation(String code);
+	User findByResetPasswordCode(String code);
 	
 	@Query(value = "select * from users join users_roles on users.id = user_id join roles on roles.id = role_id where roles.role_name = ?1", nativeQuery = true)
 	List<User> findAllByRole(String role);
