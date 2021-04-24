@@ -9919,9 +9919,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           var currentFileUpload = this.selectedFiles.item(0);
           this.uploadService.pushFileToStorageMine(this.username, currentFileUpload).subscribe(function (event) {
             _this42.selectedFiles = undefined;
-            window.location.reload();
           });
-          window.location.reload();
         }
       }, {
         key: "selectFile",
@@ -11901,7 +11899,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
     var environment = {
-      production: true,
+      production: false,
       //authURL: "http://localhost:8080/auth/",
       //patientURL: "http://localhost:8080/api/profile/",
       //dashboardURL: "http://localhost:8080/api/dashboard/",

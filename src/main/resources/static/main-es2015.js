@@ -4874,9 +4874,7 @@ class ProfileUpdateComponent {
         const currentFileUpload = this.selectedFiles.item(0);
         this.uploadService.pushFileToStorageMine(this.username, currentFileUpload).subscribe(event => {
             this.selectedFiles = undefined;
-            window.location.reload();
         });
-        window.location.reload();
     }
     selectFile(event) {
         this.selectedFiles = event.target.files;
@@ -5847,7 +5845,7 @@ __webpack_require__.r(__webpack_exports__);
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 const environment = {
-    production: true,
+    production: false,
     //authURL: "http://localhost:8080/auth/",
     //patientURL: "http://localhost:8080/api/profile/",
     //dashboardURL: "http://localhost:8080/api/dashboard/",
