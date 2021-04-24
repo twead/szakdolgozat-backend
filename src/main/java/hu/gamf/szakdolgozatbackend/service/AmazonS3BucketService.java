@@ -53,8 +53,6 @@ public class AmazonS3BucketService {
             String fileName = username + "/" + multipartFile.getOriginalFilename();
             fileURL = endpointUrl + "/" + bucketName + "/" + username + "/" + fileName;
 
-            deleteFileFromBucket(username, user.getPatient().getPicture());
-
             uploadFileToBucket(fileName, file);
             user.getPatient().setPicture(multipartFile.getOriginalFilename());
             userService.saveUser(user);
