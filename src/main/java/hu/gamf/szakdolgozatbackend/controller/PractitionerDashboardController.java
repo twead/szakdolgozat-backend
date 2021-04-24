@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasAnyRole('ROLE_PRACTITIONER','ROLE_PATIENT')")
+@PreAuthorize("hasAnyRole('ROLE_PRACTITIONER')")
 @RequestMapping("/api/practitioner-dashboard")
 @CrossOrigin
 public class PractitionerDashboardController {

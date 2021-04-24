@@ -24,7 +24,7 @@ import hu.gamf.szakdolgozatbackend.service.PatientService;
 import hu.gamf.szakdolgozatbackend.service.PractitionerService;
 
 @RestController
-@PreAuthorize("hasRole('ROLE_PRACTITIONER')")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/api/dashboard")
 @CrossOrigin
 public class AdminDashboardController {

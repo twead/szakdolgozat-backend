@@ -29,7 +29,7 @@ public class EmailService {
 		mail.setSubject("Sikeres regisztráció!");
 		mail.setText("Kedves " + user.getPatient().getName()
 				+ "! \n \nKöszönjük, hogy regisztráltál az oldalunkra!\n\n"
-				+ "Kérlek kattints a linkre profilod aktiválásához: " + Url + "auth/activation/"
+				+ "Kérlek kattints a linkre profilod aktiválásához: " + Url + "#/activation/"
 				+ user.getActivation());
 		
 		javaMailSender.send(mail);
@@ -42,7 +42,7 @@ public class EmailService {
 		mail.setSubject("Jelszó megváltoztatása!");
 		mail.setText("Kedves " + user.getPatient().getName()
 				+ "! \n \nAz alábbi linken tudod megváltoztatni a jelszavadat:\n\n"
-				+ Url + "auth/reset-password/" + user.getResetPasswordCode());
+				+ Url + "#/reset-password/" + user.getResetPasswordCode());
 
 		javaMailSender.send(mail);
 	}

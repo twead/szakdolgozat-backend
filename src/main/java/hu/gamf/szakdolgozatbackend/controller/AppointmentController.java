@@ -35,7 +35,6 @@ import hu.gamf.szakdolgozatbackend.service.UserService;
 import hu.gamf.szakdolgozatbackend.service.WorktimeService;
 
 @RestController
-@PreAuthorize("hasAnyRole('ROLE_PRACTITIONER','ROLE_PATIENT')")
 @RequestMapping("/api/appointment")
 @CrossOrigin
 public class AppointmentController {
@@ -59,6 +58,7 @@ public class AppointmentController {
 	// -------------------------PATIENT HASN'T SELECTED PRACTITIONER
 	// YET-------------------------
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/schedule-practitioners/{username}")
 	public List<User> getAllPractitionerExceptMe(@PathVariable(value = "username") String username) {
 		User user = practitionerService.findUserByUsername(username).get();
@@ -66,6 +66,7 @@ public class AppointmentController {
 		return practitionerList;
 	}
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@PutMapping("/update-practitioner/{username}")
 	public ResponseEntity updatePractitioner(@PathVariable(value = "username") String username,
 			@RequestBody Long practitionerId) {
@@ -79,6 +80,7 @@ public class AppointmentController {
 	// -------------------------PATIENT HAS ALREADY SELECTED A
 	// PRACTITIONER-------------------------
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@PostMapping("/create/{username}")
 	public void MadeAnAppointment(@PathVariable(value = "username") String username,
 			@RequestBody AppointmentDto appointmentDto) {
@@ -95,7 +97,6 @@ public class AppointmentController {
 		Practitioner practitioner = practitionerService.findPractitionerById(user.getPatient().getPractitionerId())
 				.get();
 
-		// if(practitioner.isWorksOnHolidays()==false)
 		if (appointmentService.isTheDateAHolidayDate(appointmentDto.getTime()))
 			throw new ApiRequestException("Nem foglalhatsz ünnepnapra!");
 
@@ -107,6 +108,7 @@ public class AppointmentController {
 		appointmentService.saveAppointment(appointment);
 	}
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@DeleteMapping("/delete/{id}")
 	public void DeleteAnAppointment(@PathVariable(value = "id") Long appointmentId) {
 		appointmentService.findAppointmentById(appointmentId)
@@ -114,6 +116,7 @@ public class AppointmentController {
 		appointmentService.deleteAppointmentById(appointmentId);
 	}
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/show/{username}")
 	public List<Appointment> ShowPatientAppointments(@PathVariable(value = "username") String username) {
 		User patient = patientService.findUserByUsername(username).get();
@@ -123,6 +126,7 @@ public class AppointmentController {
 		return appointments;
 	}
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/show-appointments-for-instruction/{username}")
 	public List<InstructionDto> ShowPatientAppointmentsForInstruction(@PathVariable(value = "username") String username) {
 		User patient = patientService.findUserByUsername(username).get();
@@ -139,6 +143,7 @@ public class AppointmentController {
 		return instructionList;
 	}
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/show-others-appointments/{username}")
 	public List<Appointment> ShowOthersAppointments(@PathVariable(value = "username") String username) {
 		User patient = patientService.findUserByUsername(username).get();
@@ -148,12 +153,14 @@ public class AppointmentController {
 		return appointments;
 	}
 
+	@PreAuthorize("hasRole('ROLE_PRACTITIONER') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/get-business-hours/{username}")
 	public List<Worktime> GetPractitionerWorkingTime(@PathVariable(value = "username") String username) {
 		User user = userService.findUserByUsername(username).get();
 		return user.getPractitioner().getWorktimes();
 	}
 
+	@PreAuthorize("hasRole('ROLE_PRACTITIONER')")
 	@PutMapping("/set-business-hours/{username}")
 	public void SetPractitionerWorkingTime(@PathVariable(value = "username") String username,
 			@Valid @RequestBody @Nullable Worktime[] worktimes) {
@@ -187,7 +194,8 @@ public class AppointmentController {
 			}
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_PRACTITIONER')")
 	@PostMapping("/works-on-holidays/{username}")
 	public void HolidayWorks(@PathVariable(value = "username") String username,
 			@RequestBody HolidaysDto worksOnHoliday){
@@ -198,6 +206,7 @@ public class AppointmentController {
 		userService.saveUser(user);
 	}
 
+	@PreAuthorize("hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/works-on-holidays/{username}")
 	public HolidaysDto HolidayWorksForWorktimeSettings(@PathVariable(value = "username") String username){
 		User user = userService.findUserByUsername(username).get();
@@ -205,7 +214,8 @@ public class AppointmentController {
 		worksOnHolidays.setWorksOnHoliday(user.getPractitioner().getWorksOnHolidays());
 		return worksOnHolidays;
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/my-practitioner-works-on-holidays/{username}")
 	public HolidaysDto setHolidayWorks(@PathVariable(value = "username") String username){
 		User user = userService.findUserByUsername(username).get();
@@ -215,6 +225,7 @@ public class AppointmentController {
 		return worksOnHolidays;
 	}
 
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_PRACTITIONER')")
 	@GetMapping("/my-practitioner-working-time/{username}")
 	public List<Worktime> ShowPractitionerWorkingTime(@PathVariable(value = "username") String username) {
 		

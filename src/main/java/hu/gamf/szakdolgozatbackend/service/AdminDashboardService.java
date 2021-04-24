@@ -124,7 +124,12 @@ public class AdminDashboardService {
 		user.getPatient().setName(userDetails.getPatient().getName());
 		user.getPatient().setAddress(userDetails.getPatient().getAddress());
 		user.getPatient().setDateOfBorn(userDetails.getPatient().getDateOfBorn());
-
+		if(!userDetails.getPractitioner().getSpecialization().equals(null)){
+			user.getPractitioner().setSpecialization(userDetails.getPractitioner().getSpecialization());
+		}
+		if(!userDetails.getPractitioner().getWorkingAddress().equals(null)){
+			user.getPractitioner().setWorkingAddress(userDetails.getPractitioner().getWorkingAddress());
+		}
 		userRepository.save(user);
 		return user;		
 	}

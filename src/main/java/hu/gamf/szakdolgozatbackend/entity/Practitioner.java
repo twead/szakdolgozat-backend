@@ -24,8 +24,11 @@ public class Practitioner implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column
+	@Column(length = 60)
 	private String workingAddress;
+
+	@Column(length = 60)
+	private String specialization;
 	
 	@Column
 	private boolean worksOnHolidays;
@@ -56,7 +59,15 @@ public class Practitioner implements Serializable {
 	public void setWorkingAddress(String workingAddress) {
 		this.workingAddress = workingAddress;
 	}
-	
+
+	public String getSpecialization() {
+		return specialization;
+	}
+
+	public void setSpecialization(String specialization) {
+		this.specialization = specialization;
+	}
+
 	public boolean getWorksOnHolidays() {
 		return worksOnHolidays;
 	}
