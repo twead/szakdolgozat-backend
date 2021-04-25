@@ -152,6 +152,9 @@ public class AppointmentService {
 		if(user.equals(null))
 			throw new ApiRequestException("Ez a felhasználó nem létezik");
 		user.getPractitioner().setWorksOnHolidays(worksOnHoliday.isWorksOnHoliday());
+		user.getPractitioner().setDefaultTimePerClient(worksOnHoliday.getDefaultTimePerClient());
+		user.getPractitioner().setSlotMinTime(worksOnHoliday.getSlotMinTime());
+		user.getPractitioner().setSlotMaxTime(worksOnHoliday.getSlotMaxTime());
 		userService.saveUser(user);
 	}
 
@@ -159,6 +162,9 @@ public class AppointmentService {
 		User user = userService.findUserByUsername(username).get();
 		HolidaysDto worksOnHolidays = new HolidaysDto();
 		worksOnHolidays.setWorksOnHoliday(user.getPractitioner().getWorksOnHolidays());
+		worksOnHolidays.setDefaultTimePerClient(user.getPractitioner().getDefaultTimePerClient());
+		worksOnHolidays.setSlotMinTime(user.getPractitioner().getSlotMinTime());
+		worksOnHolidays.setSlotMaxTime(user.getPractitioner().getSlotMaxTime());
 		return worksOnHolidays;
 	}
 
@@ -167,6 +173,9 @@ public class AppointmentService {
 		Practitioner practitioner = practitionerService.findPractitionerById(user.getPatient().getPractitionerId()).get();
 		HolidaysDto worksOnHolidays = new HolidaysDto();
 		worksOnHolidays.setWorksOnHoliday(practitioner.getWorksOnHolidays());
+		worksOnHolidays.setDefaultTimePerClient(practitioner.getDefaultTimePerClient());
+		worksOnHolidays.setSlotMinTime(practitioner.getSlotMinTime());
+		worksOnHolidays.setSlotMaxTime(practitioner.getSlotMaxTime());
 		return worksOnHolidays;
 	}
 

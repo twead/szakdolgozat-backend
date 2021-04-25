@@ -2,7 +2,6 @@ package hu.gamf.szakdolgozatbackend.controller;
 
 import java.text.ParseException;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import hu.gamf.szakdolgozatbackend.dto.ForgotPasswordDto;

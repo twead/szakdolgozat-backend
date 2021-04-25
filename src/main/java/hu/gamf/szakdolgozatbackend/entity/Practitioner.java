@@ -32,6 +32,15 @@ public class Practitioner implements Serializable {
 	
 	@Column
 	private boolean worksOnHolidays;
+
+	@Column(length = 10)
+	private String slotMinTime;
+
+	@Column(length = 10)
+	private String slotMaxTime;
+
+	@Column(nullable = true)
+	private int defaultTimePerClient;
 	
 	@JsonBackReference("harmadik")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -74,6 +83,30 @@ public class Practitioner implements Serializable {
 
 	public void setWorksOnHolidays(boolean worksOnHolidays) {
 		this.worksOnHolidays = worksOnHolidays;
+	}
+
+	public String getSlotMinTime() {
+		return slotMinTime;
+	}
+
+	public void setSlotMinTime(String slotMinTime) {
+		this.slotMinTime = slotMinTime;
+	}
+
+	public String getSlotMaxTime() {
+		return slotMaxTime;
+	}
+
+	public void setSlotMaxTime(String slotMaxTime) {
+		this.slotMaxTime = slotMaxTime;
+	}
+
+	public int getDefaultTimePerClient() {
+		return defaultTimePerClient;
+	}
+
+	public void setDefaultTimePerClient(int defaultTimePerClient) {
+		this.defaultTimePerClient = defaultTimePerClient;
 	}
 
 	public User getUser() {

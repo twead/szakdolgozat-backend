@@ -14,6 +14,9 @@ public class EmailService {
 	
 	@Value("${url}")
 	private String Url;
+
+	@Value("${spring.mail.username}")
+	private String MESSAGE_FROM;
 	
 	private JavaMailSender javaMailSender;
 
@@ -25,7 +28,7 @@ public class EmailService {
 	public void sendActivationEmail(User user) throws MailException {
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getPatient().getEmail());
-		mail.setFrom("onlinehealthcaresystem@email.com");
+		mail.setFrom(MESSAGE_FROM);
 		mail.setSubject("Sikeres regisztráció!");
 		mail.setText("Kedves " + user.getPatient().getName()
 				+ "! \n \nKöszönjük, hogy regisztráltál az oldalunkra!\n\n"
@@ -38,7 +41,7 @@ public class EmailService {
 	public void sendForgotPasswordEmail(User user) throws MailException {
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getPatient().getEmail());
-		mail.setFrom("onlinehealthcaresystem@email.com");
+		mail.setFrom(MESSAGE_FROM);
 		mail.setSubject("Jelszó megváltoztatása!");
 		mail.setText("Kedves " + user.getPatient().getName()
 				+ "! \n \nAz alábbi linken tudod megváltoztatni a jelszavadat:\n\n"
