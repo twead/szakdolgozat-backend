@@ -1,6 +1,5 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @Entity
 @Table(name = "patient")
-public class Patient implements Serializable{
+public class Patient {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +44,7 @@ public class Patient implements Serializable{
 	private String picture;
 	private Long practitionerId;
 	
-	@JsonBackReference("elso")
+	@JsonBackReference("patientUserBackReference")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 

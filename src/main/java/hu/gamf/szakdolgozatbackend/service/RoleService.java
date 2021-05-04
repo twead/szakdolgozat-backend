@@ -11,7 +11,6 @@ import hu.gamf.szakdolgozatbackend.entity.Role;
 import hu.gamf.szakdolgozatbackend.enums.RoleName;
 import hu.gamf.szakdolgozatbackend.repository.RoleRepository;
 
-
 @Service
 @Transactional
 public class RoleService {

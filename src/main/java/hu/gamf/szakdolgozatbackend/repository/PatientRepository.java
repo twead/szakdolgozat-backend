@@ -1,7 +1,7 @@
 package hu.gamf.szakdolgozatbackend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import hu.gamf.szakdolgozatbackend.entity.Patient;
@@ -9,7 +9,7 @@ import hu.gamf.szakdolgozatbackend.entity.Patient;
 import java.util.List;
 
 @Repository
-public interface PatientRepository extends JpaRepository<Patient, Long>{
+public interface PatientRepository extends CrudRepository<Patient, Long> {
 	boolean existsByEmail(String email);
 	Patient findByEmail(String email);
 	

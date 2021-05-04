@@ -19,12 +19,15 @@ public class NewUser {
 	@NotBlank
 	private String name;
 	@Email
+	@NotBlank
 	private String email;
 	private Set<String> roles = new HashSet<>();
-	
+	@NotBlank
 	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
 	private Date dateOfBorn;
+	@NotBlank
 	private String address;
+	@NotBlank
 	private String phoneNumber;
 	
 	

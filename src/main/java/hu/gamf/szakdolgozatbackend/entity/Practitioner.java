@@ -1,6 +1,5 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,38 +17,30 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "practitioner")
-public class Practitioner implements Serializable {
+public class Practitioner {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	@Column(length = 60)
 	private String workingAddress;
-
 	@Column(length = 60)
 	private String specialization;
-	
 	@Column
 	private boolean worksOnHolidays;
-
-	@Column(length = 10)
+	@Column(length = 5)
 	private String slotMinTime;
-
-	@Column(length = 10)
+	@Column(length = 5)
 	private String slotMaxTime;
-
 	@Column(nullable = true)
 	private int defaultTimePerClient;
 	
-	@JsonBackReference("harmadik")
+	@JsonBackReference("practitionerUserBackReference")
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 	
-	
 	@OneToMany(mappedBy="practitioner")
     private List<Worktime> worktimes;
-	
 	
 	@OneToMany(mappedBy="practitioner")
     private List<Appointment> appointments;
@@ -124,5 +115,12 @@ public class Practitioner implements Serializable {
 	public void setWorktimes(List<Worktime> worktimes) {
 		this.worktimes = worktimes;
 	}
-	
+
+	public List<Appointment> getAppointments() {
+		return appointments;
+	}
+
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments = appointments;
+	}
 }

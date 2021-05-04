@@ -40,7 +40,7 @@ public class AppointmentService {
 		User user = patientService.findUserByUsername(username)
 				.orElseThrow(() -> new ApiRequestException("Nem található felhasználó"));
 
-		if (existsAppointmentByTime(appointmentDto.getTime()))
+		if (existsAppointmentByTimeAndPractitionerId(appointmentDto.getTime(), user.getPatient().getPractitionerId()))
 			throw new ApiRequestException("Erre az időpontra nem foglalhatsz!");
 
 		if (existsAppointmentByPatientIdAndPractitionerId(user.getId(),user.getPatient().getPractitionerId()))
@@ -210,8 +210,8 @@ public class AppointmentService {
 		return appointmentRepository.findAllExceptTheActualPatient(patientId, practitionerId);
 	}
 
-	public boolean existsAppointmentByTime(String time) {
-		return appointmentRepository.existsByTime(time);
+	public boolean existsAppointmentByTimeAndPractitionerId(String time, Long id) {
+		return appointmentRepository.existsByTimeAndPractitionerId(time, id);
 	}
 
 	public boolean existsAppointmentByPatientIdAndPractitionerId(Long patientId, Long practitionerId) {

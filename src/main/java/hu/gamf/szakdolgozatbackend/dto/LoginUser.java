@@ -8,8 +8,7 @@ public class LoginUser {
 	private String username;
 	@NotBlank
 	private String password;
-	
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -22,7 +21,5 @@ public class LoginUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
-	
+
 }

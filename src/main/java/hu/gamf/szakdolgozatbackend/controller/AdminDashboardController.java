@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import hu.gamf.szakdolgozatbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.service.AdminDashboardService;
-import hu.gamf.szakdolgozatbackend.service.PatientService;
-import hu.gamf.szakdolgozatbackend.service.PractitionerService;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -29,33 +28,28 @@ import hu.gamf.szakdolgozatbackend.service.PractitionerService;
 @CrossOrigin
 public class AdminDashboardController {
 
-	private PatientService patientService;
-	private PractitionerService practitionerService;
+	private UserService userService;
 	private AdminDashboardService dashboardService;
 	
 	@Autowired
-	public AdminDashboardController(AdminDashboardService dashboardService, PatientService patientService,
-			PractitionerService practitionerService) {
+	public AdminDashboardController(AdminDashboardService dashboardService, UserService userService) {
 		this.dashboardService = dashboardService;
-		this.patientService = patientService;
-		this.practitionerService = practitionerService;
+		this.userService = userService;
 	}
 
 	@GetMapping("/patients")
 	public List<User> getAllPatient() {
-		List<User> patientList = patientService.findAllUserByRole("ROLE_PATIENT");
-		return patientList;
+		return userService.findAllUserByRole("ROLE_PATIENT");
 	}
 	
 	@GetMapping("/practitioners")
 	public List<User> getAllPractitioners() {
-		List<User> practitionerList = practitionerService.findAllUserByRole("ROLE_PRACTITIONER");
-		return practitionerList;
+		return userService.findAllUserByRole("ROLE_PRACTITIONER");
 	}
 
 	@GetMapping("/patients/details/{id}")
 	public ResponseEntity<User> getPatientDetailsById(@PathVariable(value = "id") Long userId) {
-		User user = patientService.findUserById(userId).orElseThrow(
+		User user = userService.findUserById(userId).orElseThrow(
 				() -> new ApiRequestException("Nem található felhasználó ezzel az id-val!")
 			);
 		return new ResponseEntity(user, HttpStatus.OK);
@@ -82,7 +76,7 @@ public class AdminDashboardController {
 
 	@DeleteMapping("/patients/delete/{id}")
 	public ResponseEntity deletePatient(@PathVariable(value = "id") Long userId) {		
-		patientService.deleteUserById(userId);
+		userService.deleteUserById(userId);
 		return new ResponseEntity(HttpStatus.OK);	
 	}
 	

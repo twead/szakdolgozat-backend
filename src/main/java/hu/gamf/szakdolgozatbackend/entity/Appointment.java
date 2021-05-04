@@ -1,26 +1,25 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "appointment")
-public class Appointment implements Serializable {
+public class Appointment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(length = 30)
 	private String time;
 	private String message;
 
-	@JsonBackReference("masodik")
+	@JsonBackReference("appointmentPatientBackReference")
 	@ManyToOne
 	private Patient patient;
 
-	@JsonBackReference("negyedik")
+	@JsonBackReference("appointmentPractitionerBackReference")
 	@ManyToOne
 	private Practitioner practitioner;
 

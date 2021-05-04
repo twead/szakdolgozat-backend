@@ -10,7 +10,6 @@ import hu.gamf.szakdolgozatbackend.entity.User;
 import hu.gamf.szakdolgozatbackend.security.entity.UserPrincipal;
 import hu.gamf.szakdolgozatbackend.service.UserService;
 
-
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	

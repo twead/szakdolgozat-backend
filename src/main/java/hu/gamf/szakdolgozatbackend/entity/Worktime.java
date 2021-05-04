@@ -1,26 +1,28 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "worktime")
-public class Worktime implements Serializable {
+public class Worktime {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private short day;
+	@Column(length = 5)
 	private String fromTime;
+	@Column(length = 5)
 	private String toTime;
-	
-	@JsonBackReference("otodik")
+
+	@JsonBackReference("worktimePractitionerBackReference")
 	@ManyToOne
     private Practitioner practitioner;
+
+	public Worktime() {
+	}
 
 	public short getDay() {
 		return day;

@@ -1,7 +1,5 @@
 package hu.gamf.szakdolgozatbackend.entity;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,10 +12,9 @@ import javax.validation.constraints.NotNull;
 
 import hu.gamf.szakdolgozatbackend.enums.RoleName;
 
-
 @Entity
 @Table(name = "roles")
-public class Role implements Serializable {
+public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

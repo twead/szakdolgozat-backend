@@ -1,10 +1,8 @@
 package hu.gamf.szakdolgozatbackend.controller;
 
-import hu.gamf.szakdolgozatbackend.dto.AppointmentDto;
 import hu.gamf.szakdolgozatbackend.dto.ClientCrudDto;
 import hu.gamf.szakdolgozatbackend.entity.Appointment;
 import hu.gamf.szakdolgozatbackend.entity.User;
-import hu.gamf.szakdolgozatbackend.exception.ApiRequestException;
 import hu.gamf.szakdolgozatbackend.service.AppointmentService;
 import hu.gamf.szakdolgozatbackend.service.PractitionerDashboardService;
 import hu.gamf.szakdolgozatbackend.service.UserService;
@@ -14,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

@@ -17,8 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import hu.gamf.szakdolgozatbackend.security.service.UserDetailsServiceImpl;
 
-
-
 public class JwtTokenFilter extends OncePerRequestFilter{
 	
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(JwtTokenFilter.class);

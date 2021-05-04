@@ -64,7 +64,6 @@ public class AdminDashboardService {
 		user.setRoles(roles);
 
 		try {
-			//Practitioner practitioner = practitionerService.findPractitionerByUserId(user.getId());
 
 			if(practitionerService.existsPractitionerByUserId(user.getId())) {
 				user.setPractitioner(practitionerService.findPractitionerByUserId(user.getId()));
@@ -124,11 +123,12 @@ public class AdminDashboardService {
 		user.getPatient().setName(userDetails.getPatient().getName());
 		user.getPatient().setAddress(userDetails.getPatient().getAddress());
 		user.getPatient().setDateOfBorn(userDetails.getPatient().getDateOfBorn());
-		if(!userDetails.getPractitioner().getSpecialization().equals(null)){
+		try{
 			user.getPractitioner().setSpecialization(userDetails.getPractitioner().getSpecialization());
-		}
-		if(!userDetails.getPractitioner().getWorkingAddress().equals(null)){
 			user.getPractitioner().setWorkingAddress(userDetails.getPractitioner().getWorkingAddress());
+		} catch (Exception e){
+			userRepository.save(user);
+			return user;
 		}
 		userRepository.save(user);
 		return user;		
