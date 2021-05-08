@@ -21,6 +21,9 @@ public class PractitionerDashboardService {
                 dto.setMessage("");
             else
                 dto.setMessage(appointment.getMessage());
+            dto.setPhoneNumber(appointment.getPatient().getPhoneNumber());
+            dto.setPicture(appointment.getPatient().getPicture());
+            dto.setUsername(appointment.getPatient().getUser().getUsername());
             clientList.add(dto);
         }
 
