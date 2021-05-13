@@ -15,7 +15,7 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
 
 	List<Appointment> findAllByPatientId(Long patientId);
 	
-	@Query(value = "select * from appointment where patient_id != ?1 and practitioner_id = ?2", nativeQuery = true)
+	@Query(value = "select * from appointments where patient_id != ?1 and practitioner_id = ?2", nativeQuery = true)
 	List<Appointment> findAllExceptTheActualPatient(Long patientId, Long practitionerId);
 	
 	boolean existsByTimeAndPractitionerId(String time, Long practitionerId);

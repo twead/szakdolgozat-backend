@@ -5,7 +5,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "appointment")
+@Table(name = "appointments")
 public class Appointment {
 
 	@Id

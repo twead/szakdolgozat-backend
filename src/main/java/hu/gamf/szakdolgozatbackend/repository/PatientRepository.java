@@ -13,7 +13,7 @@ public interface PatientRepository extends CrudRepository<Patient, Long> {
 	boolean existsByEmail(String email);
 	Patient findByEmail(String email);
 	
-	@Query(value = "select * from patient where patient.email = ?1 and patient.id != ?2", nativeQuery = true)
+	@Query(value = "select * from patients where patients.email = ?1 and patients.id != ?2", nativeQuery = true)
 	Patient findExistEmailForUpdate(String email, Long id);
 
 	List<Patient> findAllByPractitionerId(Long id);

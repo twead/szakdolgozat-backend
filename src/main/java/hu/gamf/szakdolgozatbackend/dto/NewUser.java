@@ -22,7 +22,7 @@ public class NewUser {
 	@NotBlank
 	private String email;
 	private Set<String> roles = new HashSet<>();
-	@NotBlank
+
 	@JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
 	private Date dateOfBorn;
 	@NotBlank
